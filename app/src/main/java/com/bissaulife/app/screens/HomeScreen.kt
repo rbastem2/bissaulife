@@ -1,6 +1,7 @@
 package com.bissaulife.app.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +25,9 @@ import com.bissaulife.app.theme.*
 data class Categoria(val nome: String, val icone: ImageVector, val cor: Color)
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    onAbrirCategoria: (String) -> Unit = {}
+) {
     var abaAtual by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -86,11 +89,11 @@ fun HomeScreen() {
         ) {
             Cabecalho()
             Spacer(Modifier.height(16.dp))
-            CategoriasGrid()
+            CategoriasGrid(onCategoriaClick = onAbrirCategoria)
             Spacer(Modifier.height(16.dp))
             BarraBusca()
             Spacer(Modifier.height(16.dp))
-            BannerDestaque()
+            BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -151,7 +154,7 @@ fun Cabecalho() {
 }
 
 @Composable
-fun CategoriasGrid() {
+fun CategoriasGrid(onCategoriaClick: (String) -> Unit) {
     val categorias = listOf(
         Categoria("Gastronomia", Icons.Filled.Restaurant, BissauOrange),
         Categoria("Beleza", Icons.Filled.Spa, BissauPink),
@@ -171,6 +174,7 @@ fun CategoriasGrid() {
                     .weight(1f)
                     .clip(RoundedCornerShape(16.dp))
                     .background(cat.cor)
+                    .clickable { onCategoriaClick(cat.nome) }
                     .padding(vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -203,7 +207,7 @@ fun BarraBusca() {
 }
 
 @Composable
-fun BannerDestaque() {
+fun BannerDestaque(onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -236,7 +240,7 @@ fun BannerDestaque() {
             )
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick = { },
+                onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                 shape = RoundedCornerShape(24.dp)
             ) {
