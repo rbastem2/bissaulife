@@ -10,10 +10,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -40,34 +40,27 @@ fun DetalheScreen(
     var favorito by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    fun abrirWhatsApp() {
-        val numero = restaurante.whatsapp.replace("+", "").replace(" ", "").replace("-", "")
-        val mensagem = "Olá! Vim pelo BissauLife e gostaria de saber mais sobre ${restaurante.nome}."
-        val url = "https://wa.me/$numero?text=${Uri.encode(mensagem)}"
+    fun abrirTelefone() {
+        val numero = restaurante.telefone.replace(" ", "").replace("-", "")
         try {
-            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$numero"))
+            context.startActivity(intent)
         } catch (e: Exception) {
-            context.startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$numero"))
-            )
         }
     }
 
     fun abrirMaps() {
         val endereco = restaurante.endereco
         try {
-            // Tenta abrir direto no app do Google Maps
             val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
             context.startActivity(intent)
         } catch (e: Exception) {
             try {
-                // Fallback 1: qualquer app de mapa
                 val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
             } catch (e2: Exception) {
-                // Fallback 2: navegador
                 val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(endereco)}")
                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
@@ -81,7 +74,6 @@ fun DetalheScreen(
                 .background(Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Foto de topo com gradiente
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -108,7 +100,6 @@ fun DetalheScreen(
                 )
             }
 
-            // Conteúdo
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -139,7 +130,7 @@ fun DetalheScreen(
                     )
                     Spacer(Modifier.width(4.dp))
                     Text(
-                        "(${restaurante.avaliacoes} avaliações)",
+                        "(${restaurante.avaliacoes} avaliacoes)",
                         fontSize = 13.sp,
                         color = Color.Gray
                     )
@@ -155,7 +146,7 @@ fun DetalheScreen(
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        "📍 ${restaurante.distancia}",
+                        restaurante.distancia,
                         fontSize = 13.sp,
                         color = Color.Gray
                     )
@@ -163,7 +154,6 @@ fun DetalheScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                // Card de preço
                 Card(
                     shape = RoundedCornerShape(16.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFFF0FBF5)),
@@ -177,7 +167,7 @@ fun DetalheScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                "Preço médio",
+                                "Preco medio",
                                 fontSize = 12.sp,
                                 color = Color.Gray
                             )
@@ -188,7 +178,6 @@ fun DetalheScreen(
                                 color = BissauGreen
                             )
                         }
-                        Text("💰", fontSize = 32.sp)
                     }
                 }
 
@@ -211,7 +200,22 @@ fun DetalheScreen(
                 Spacer(Modifier.height(20.dp))
 
                 Text(
-                    "Endereço",
+                    "Telefone",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    restaurante.telefone,
+                    fontSize = 14.sp,
+                    color = Color(0xFF444444)
+                )
+
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    "Endereco",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
@@ -226,19 +230,19 @@ fun DetalheScreen(
                 Spacer(Modifier.height(20.dp))
 
                 Text(
-                    "Horário",
+                    "Horario",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Segunda a Sábado: 11h às 23h",
+                    "Segunda a Sabado: 11h as 23h",
                     fontSize = 14.sp,
                     color = Color(0xFF444444)
                 )
                 Text(
-                    "Domingo: 12h às 22h",
+                    "Domingo: 12h as 22h",
                     fontSize = 14.sp,
                     color = Color(0xFF444444)
                 )
@@ -247,7 +251,6 @@ fun DetalheScreen(
             }
         }
 
-        // Botão voltar flutuante
         IconButton(
             onClick = onVoltar,
             modifier = Modifier
@@ -260,7 +263,6 @@ fun DetalheScreen(
             Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.Black)
         }
 
-        // Botão favorito flutuante
         IconButton(
             onClick = { favorito = !favorito },
             modifier = Modifier
@@ -277,7 +279,6 @@ fun DetalheScreen(
             )
         }
 
-        // Barra inferior com 2 botões
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -290,16 +291,16 @@ fun DetalheScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Button(
-                    onClick = { abrirWhatsApp() },
+                    onClick = { abrirTelefone() },
                     modifier = Modifier
                         .weight(1f)
                         .height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                     shape = RoundedCornerShape(28.dp)
                 ) {
-                    Icon(Icons.Filled.Chat, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Icon(Icons.Filled.Phone, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(6.dp))
-                    Text("WhatsApp", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                    Text("Ligar", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                 }
 
                 Button(
