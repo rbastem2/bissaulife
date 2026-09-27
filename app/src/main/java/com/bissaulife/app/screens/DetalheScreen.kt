@@ -1,5 +1,7 @@
 package com.bissaulife.app.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,8 +10,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +38,41 @@ fun DetalheScreen(
     onVoltar: () -> Unit
 ) {
     var favorito by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    fun abrirWhatsApp() {
+        val numero = restaurante.whatsapp.replace("+", "").replace(" ", "").replace("-", "")
+        val mensagem = "Olá! Vim pelo BissauLife e gostaria de saber mais sobre ${restaurante.nome}."
+        val url = "https://wa.me/$numero?text=${Uri.encode(mensagem)}"
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        } catch (e: Exception) {
+            context.startActivity(
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$numero"))
+            )
+        }
+    }
+
+    fun abrirMaps() {
+        val endereco = restaurante.endereco
+        try {
+            // Tenta abrir direto no app do Google Maps
+            val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.setPackage("com.google.android.apps.maps")
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            try {
+                // Fallback 1: qualquer app de mapa
+                val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
+                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+            } catch (e2: Exception) {
+                // Fallback 2: navegador
+                val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(endereco)}")
+                context.startActivity(Intent(Intent.ACTION_VIEW, uri))
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -168,7 +208,22 @@ fun DetalheScreen(
                     lineHeight = 20.sp
                 )
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
+
+                Text(
+                    "Endereço",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    restaurante.endereco,
+                    fontSize = 14.sp,
+                    color = Color(0xFF444444)
+                )
+
+                Spacer(Modifier.height(20.dp))
 
                 Text(
                     "Horário",
@@ -188,11 +243,11 @@ fun DetalheScreen(
                     color = Color(0xFF444444)
                 )
 
-                Spacer(Modifier.height(100.dp))
+                Spacer(Modifier.height(110.dp))
             }
         }
 
-        // Botão voltar flutuante (topo esquerdo)
+        // Botão voltar flutuante
         IconButton(
             onClick = onVoltar,
             modifier = Modifier
@@ -202,14 +257,10 @@ fun DetalheScreen(
                 .background(Color.White.copy(alpha = 0.9f))
                 .align(Alignment.TopStart)
         ) {
-            Icon(
-                Icons.Filled.ArrowBack,
-                contentDescription = "Voltar",
-                tint = Color.Black
-            )
+            Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.Black)
         }
 
-        // Botão favorito flutuante (topo direito)
+        // Botão favorito flutuante
         IconButton(
             onClick = { favorito = !favorito },
             modifier = Modifier
@@ -226,7 +277,7 @@ fun DetalheScreen(
             )
         }
 
-        // Botão principal (fundo)
+        // Barra inferior com 2 botões
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -234,19 +285,35 @@ fun DetalheScreen(
                 .background(Color.White)
                 .padding(16.dp)
         ) {
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
-                shape = RoundedCornerShape(28.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text(
-                    "Reservar agora",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+                Button(
+                    onClick = { abrirWhatsApp() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
+                    shape = RoundedCornerShape(28.dp)
+                ) {
+                    Icon(Icons.Filled.Chat, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("WhatsApp", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                }
+
+                Button(
+                    onClick = { abrirMaps() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
+                    shape = RoundedCornerShape(28.dp)
+                ) {
+                    Icon(Icons.Filled.LocationOn, contentDescription = null, tint = Color.White, modifier = Modifier.size(20.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text("Como chegar", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                }
             }
         }
     }
