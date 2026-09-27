@@ -33,7 +33,10 @@ fun HomeScreen(
     onAbrirCategoria: (String) -> Unit,
     onAbrirRestaurante: (Restaurante) -> Unit,
     onAbrirItem: (Item, String) -> Unit,
-    onAbrirPlanos: () -> Unit
+    onAbrirPlanos: () -> Unit,
+    onAbrirIdiomas: () -> Unit,
+    onAbrirSobre: () -> Unit,
+    onAbrirDefinicoes: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
 
@@ -94,13 +97,21 @@ fun HomeScreen(
         ) {
             when (abaAtual) {
                 0 -> ConteudoInicio(onAbrirCategoria)
-                1 -> ExplorarPlaceholder()
+                1 -> ExplorarScreen(
+                    onAbrirRestaurante = onAbrirRestaurante,
+                    onAbrirItem = onAbrirItem
+                )
                 2 -> FavoritosScreen(
                     viewModel = viewModel,
                     onAbrirRestaurante = onAbrirRestaurante,
                     onAbrirItem = onAbrirItem
                 )
-                3 -> PerfilScreen(onAbrirPlanos = onAbrirPlanos)
+                3 -> PerfilScreen(
+                    onAbrirPlanos = onAbrirPlanos,
+                    onAbrirIdiomas = onAbrirIdiomas,
+                    onAbrirSobre = onAbrirSobre,
+                    onAbrirDefinicoes = onAbrirDefinicoes
+                )
             }
         }
     }
@@ -122,40 +133,6 @@ fun ConteudoInicio(onAbrirCategoria: (String) -> Unit) {
         Spacer(Modifier.height(16.dp))
         BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
         Spacer(Modifier.height(24.dp))
-    }
-}
-
-@Composable
-fun ExplorarPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            Icons.Filled.Search,
-            contentDescription = null,
-            tint = Color(0xFFDDDDDD),
-            modifier = Modifier.size(90.dp)
-        )
-        Spacer(Modifier.height(16.dp))
-        Text(
-            "Explorar",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF666666)
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Em breve voce podera buscar servicos, produtos e lugares.",
-            fontSize = 13.sp,
-            color = Color(0xFF999999),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            lineHeight = 19.sp
-        )
     }
 }
 

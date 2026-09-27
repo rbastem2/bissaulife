@@ -12,7 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,10 +27,12 @@ import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PerfilScreen(
-    onAbrirPlanos: () -> Unit
+    onAbrirPlanos: () -> Unit,
+    onAbrirIdiomas: () -> Unit,
+    onAbrirSobre: () -> Unit,
+    onAbrirDefinicoes: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -49,7 +51,6 @@ fun PerfilScreen(
             .background(Color(0xFFF5F5F5))
             .verticalScroll(rememberScrollState())
     ) {
-        // CABECALHO
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,7 +95,6 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // CARD PREMIUM (destaque)
         Card(
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -148,7 +148,6 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // MENU
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -175,28 +174,27 @@ fun PerfilScreen(
                     icone = Icons.Filled.Language,
                     titulo = "Idiomas",
                     subtitulo = "Portugues",
-                    onClick = { }
+                    onClick = onAbrirIdiomas
                 )
                 Divider(color = Color(0xFFEEEEEE))
                 ItemMenu(
                     icone = Icons.Filled.Info,
                     titulo = "Sobre o BissauLife",
-                    subtitulo = "Versao 1.0",
-                    onClick = { }
+                    subtitulo = "Versao 1.1",
+                    onClick = onAbrirSobre
                 )
                 Divider(color = Color(0xFFEEEEEE))
                 ItemMenu(
                     icone = Icons.Filled.Settings,
                     titulo = "Definicoes",
                     subtitulo = "Notificacoes, privacidade",
-                    onClick = { }
+                    onClick = onAbrirDefinicoes
                 )
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
-        // BANNER FINAL
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -212,11 +210,7 @@ fun PerfilScreen(
             contentAlignment = Alignment.CenterStart
         ) {
             Column {
-                Text(
-                    "Juntos fazemos",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
+                Text("Juntos fazemos", color = Color.White, fontSize = 14.sp)
                 Text(
                     "Bissau crescer!",
                     color = Color.White,
@@ -255,11 +249,7 @@ fun ItemMenu(
                 fontWeight = FontWeight.SemiBold,
                 color = Color.Black
             )
-            Text(
-                subtitulo,
-                fontSize = 12.sp,
-                color = Color.Gray
-            )
+            Text(subtitulo, fontSize = 12.sp, color = Color.Gray)
         }
         Icon(
             Icons.Filled.ArrowForwardIos,

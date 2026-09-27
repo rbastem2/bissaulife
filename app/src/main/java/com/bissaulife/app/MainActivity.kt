@@ -14,12 +14,15 @@ import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
 import com.bissaulife.app.screens.BelezaScreen
+import com.bissaulife.app.screens.DefinicoesScreen
 import com.bissaulife.app.screens.DetalheItemScreen
 import com.bissaulife.app.screens.DetalheScreen
 import com.bissaulife.app.screens.GastronomiaScreen
 import com.bissaulife.app.screens.HomeScreen
+import com.bissaulife.app.screens.IdiomasScreen
 import com.bissaulife.app.screens.ModaScreen
 import com.bissaulife.app.screens.PlanosScreen
+import com.bissaulife.app.screens.SobreScreen
 import com.bissaulife.app.screens.SplashScreen
 import com.bissaulife.app.screens.ViagensScreen
 import com.bissaulife.app.theme.BissauLifeTheme
@@ -67,9 +70,10 @@ class MainActivity : ComponentActivity() {
                                         "beleza" -> navController.navigate("detalhe_item_beleza/${item.id}")
                                     }
                                 },
-                                onAbrirPlanos = {
-                                    navController.navigate("planos")
-                                }
+                                onAbrirPlanos = { navController.navigate("planos") },
+                                onAbrirIdiomas = { navController.navigate("idiomas") },
+                                onAbrirSobre = { navController.navigate("sobre") },
+                                onAbrirDefinicoes = { navController.navigate("definicoes") }
                             )
                         }
 
@@ -155,6 +159,24 @@ class MainActivity : ComponentActivity() {
 
                         composable("planos") {
                             PlanosScreen(
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("idiomas") {
+                            IdiomasScreen(
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("sobre") {
+                            SobreScreen(
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("definicoes") {
+                            DefinicoesScreen(
                                 onVoltar = { navController.popBackStack() }
                             )
                         }

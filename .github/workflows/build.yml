@@ -21,11 +21,28 @@ jobs:
       - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Compilar APK debug
-        run: gradle assembleDebug --no-daemon
+      - name: Decodificar keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > ${{ github.workspace }}/bissaulife.jks
+          ls -la ${{ github.workspace }}/bissaulife.jks
+
+      - name: Compilar APK release
+        env:
+          KEYSTORE_PATH: ${{ github.workspace }}/bissaulife.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle assembleRelease --no-daemon
+
+      - name: Renomear APK
+        run: |
+          mkdir -p output
+          cp app/build/outputs/apk/release/*.apk output/BissauLife.apk 2>/dev/null || true
+          cp app/build/outputs/apk/debug/*.apk output/BissauLife-debug.apk 2>/dev/null || true
+          ls -la output/
 
       - name: Enviar APK como artefato
         uses: actions/upload-artifact@v4
         with:
           name: BissauLife-APK
-          path: app/build/outputs/apk/debug/*.apk
+          path: output/*.apk
