@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.theme.BissauGreen
 
@@ -35,10 +36,26 @@ import com.bissaulife.app.theme.BissauGreen
 @Composable
 fun DetalheItemScreen(
     item: Item,
+    tipo: String,
+    viewModel: FavoritosViewModel,
     onVoltar: () -> Unit
 ) {
-    var favorito by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    val favorito = when (tipo) {
+        "moda" -> viewModel.isModaFav(item.id)
+        "viagem" -> viewModel.isViagemFav(item.id)
+        "beleza" -> viewModel.isBelezaFav(item.id)
+        else -> false
+    }
+
+    fun toggleFavorito() {
+        when (tipo) {
+            "moda" -> viewModel.toggleModa(item.id)
+            "viagem" -> viewModel.toggleViagem(item.id)
+            "beleza" -> viewModel.toggleBeleza(item.id)
+        }
+    }
 
     fun abrirTelefone() {
         val numero = item.telefone.replace(" ", "").replace("-", "")
@@ -138,11 +155,7 @@ fun DetalheItemScreen(
 
                 Spacer(Modifier.height(8.dp))
 
-                Text(
-                    item.categoria,
-                    fontSize = 13.sp,
-                    color = Color.Gray
-                )
+                Text(item.categoria, fontSize = 13.sp, color = Color.Gray)
 
                 Spacer(Modifier.height(20.dp))
 
@@ -158,11 +171,7 @@ fun DetalheItemScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                "Preco",
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
+                            Text("Preco", fontSize = 12.sp, color = Color.Gray)
                             Text(
                                 item.preco,
                                 fontSize = 20.sp,
@@ -175,12 +184,7 @@ fun DetalheItemScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Sobre",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Sobre", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     item.descricao,
@@ -191,33 +195,15 @@ fun DetalheItemScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Contacto",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Contacto", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    item.telefone,
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
+                Text(item.telefone, fontSize = 14.sp, color = Color(0xFF444444))
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Localizacao",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Localizacao", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    item.endereco,
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
+                Text(item.endereco, fontSize = 14.sp, color = Color(0xFF444444))
 
                 Spacer(Modifier.height(110.dp))
             }
@@ -236,7 +222,7 @@ fun DetalheItemScreen(
         }
 
         IconButton(
-            onClick = { favorito = !favorito },
+            onClick = { toggleFavorito() },
             modifier = Modifier
                 .padding(16.dp)
                 .size(44.dp)
@@ -264,9 +250,7 @@ fun DetalheItemScreen(
             ) {
                 Button(
                     onClick = { abrirTelefone() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
+                    modifier = Modifier.weight(1f).height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                     shape = RoundedCornerShape(28.dp)
                 ) {
@@ -277,9 +261,7 @@ fun DetalheItemScreen(
 
                 Button(
                     onClick = { abrirMaps() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
+                    modifier = Modifier.weight(1f).height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
                     shape = RoundedCornerShape(28.dp)
                 ) {

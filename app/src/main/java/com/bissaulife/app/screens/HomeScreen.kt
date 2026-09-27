@@ -20,13 +20,20 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.data.FavoritosViewModel
+import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.Restaurante
 import com.bissaulife.app.theme.*
 
 data class Categoria(val nome: String, val icone: ImageVector, val cor: Color)
 
 @Composable
 fun HomeScreen(
-    onAbrirCategoria: (String) -> Unit = {}
+    viewModel: FavoritosViewModel,
+    onAbrirCategoria: (String) -> Unit,
+    onAbrirRestaurante: (Restaurante) -> Unit,
+    onAbrirItem: (Item, String) -> Unit,
+    onAbrirPlanos: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
 
@@ -37,7 +44,7 @@ fun HomeScreen(
                     selected = abaAtual == 0,
                     onClick = { abaAtual = 0 },
                     icon = { Icon(Icons.Filled.Home, null) },
-                    label = { Text("Início") },
+                    label = { Text("Inicio") },
                     colors = NavigationBarItemDefaults.colors(
                         selectedIconColor = BissauGreen,
                         selectedTextColor = BissauGreen,
@@ -80,22 +87,75 @@ fun HomeScreen(
             }
         }
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(BackgroundLight)
-                .verticalScroll(rememberScrollState())
         ) {
-            Cabecalho()
-            Spacer(Modifier.height(16.dp))
-            CategoriasGrid(onCategoriaClick = onAbrirCategoria)
-            Spacer(Modifier.height(16.dp))
-            BarraBusca()
-            Spacer(Modifier.height(16.dp))
-            BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
-            Spacer(Modifier.height(24.dp))
+            when (abaAtual) {
+                0 -> ConteudoInicio(onAbrirCategoria)
+                1 -> ExplorarPlaceholder()
+                2 -> FavoritosScreen(
+                    viewModel = viewModel,
+                    onAbrirRestaurante = onAbrirRestaurante,
+                    onAbrirItem = onAbrirItem
+                )
+                3 -> PerfilScreen(onAbrirPlanos = onAbrirPlanos)
+            }
         }
+    }
+}
+
+@Composable
+fun ConteudoInicio(onAbrirCategoria: (String) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(BackgroundLight)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Cabecalho()
+        Spacer(Modifier.height(16.dp))
+        CategoriasGrid(onCategoriaClick = onAbrirCategoria)
+        Spacer(Modifier.height(16.dp))
+        BarraBusca()
+        Spacer(Modifier.height(16.dp))
+        BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
+        Spacer(Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun ExplorarPlaceholder() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            Icons.Filled.Search,
+            contentDescription = null,
+            tint = Color(0xFFDDDDDD),
+            modifier = Modifier.size(90.dp)
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            "Explorar",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF666666)
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Em breve voce podera buscar servicos, produtos e lugares.",
+            fontSize = 13.sp,
+            color = Color(0xFF999999),
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            lineHeight = 19.sp
+        )
     }
 }
 
@@ -144,7 +204,7 @@ fun Cabecalho() {
             }
             Spacer(Modifier.height(16.dp))
             Text(
-                "📍 O seu guia e marketplace de gastronomia, beleza, moda e viagens.",
+                "O seu guia e marketplace da Guine-Bissau.",
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 12.sp,
                 lineHeight = 16.sp
@@ -199,7 +259,7 @@ fun BarraBusca() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        placeholder = { Text("Pesquisar serviços, produtos, lugares...", fontSize = 13.sp) },
+        placeholder = { Text("Pesquisar servicos, produtos, lugares...", fontSize = 13.sp) },
         leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
         shape = RoundedCornerShape(28.dp),
         singleLine = true
@@ -234,7 +294,7 @@ fun BannerDestaque(onClick: () -> Unit) {
             )
             Spacer(Modifier.height(6.dp))
             Text(
-                "Restaurantes, pratos típicos e muito mais.",
+                "Restaurantes, pratos tipicos e muito mais.",
                 color = Color.White.copy(alpha = 0.9f),
                 fontSize = 13.sp
             )
@@ -244,7 +304,7 @@ fun BannerDestaque(onClick: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                 shape = RoundedCornerShape(24.dp)
             ) {
-                Text("Ver agora →")
+                Text("Ver agora")
             }
         }
     }

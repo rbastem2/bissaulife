@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bissaulife.app.data.Beleza
+import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
@@ -17,6 +19,7 @@ import com.bissaulife.app.screens.DetalheScreen
 import com.bissaulife.app.screens.GastronomiaScreen
 import com.bissaulife.app.screens.HomeScreen
 import com.bissaulife.app.screens.ModaScreen
+import com.bissaulife.app.screens.PlanosScreen
 import com.bissaulife.app.screens.SplashScreen
 import com.bissaulife.app.screens.ViagensScreen
 import com.bissaulife.app.theme.BissauLifeTheme
@@ -29,6 +32,7 @@ class MainActivity : ComponentActivity() {
             BissauLifeTheme {
                 var showSplash by remember { mutableStateOf(true) }
                 val navController = rememberNavController()
+                val favoritosVM: FavoritosViewModel = viewModel()
 
                 LaunchedEffect(Unit) {
                     delay(2500)
@@ -42,9 +46,9 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = "home"
                     ) {
-                        // HOME
                         composable("home") {
                             HomeScreen(
+                                viewModel = favoritosVM,
                                 onAbrirCategoria = { categoria ->
                                     when (categoria) {
                                         "Gastronomia" -> navController.navigate("gastronomia")
@@ -52,11 +56,23 @@ class MainActivity : ComponentActivity() {
                                         "Viagens" -> navController.navigate("viagens")
                                         "Beleza" -> navController.navigate("beleza")
                                     }
+                                },
+                                onAbrirRestaurante = { restaurante ->
+                                    navController.navigate("detalhe_restaurante/${restaurante.id}")
+                                },
+                                onAbrirItem = { item, tipo ->
+                                    when (tipo) {
+                                        "moda" -> navController.navigate("detalhe_item_moda/${item.id}")
+                                        "viagem" -> navController.navigate("detalhe_item_viagem/${item.id}")
+                                        "beleza" -> navController.navigate("detalhe_item_beleza/${item.id}")
+                                    }
+                                },
+                                onAbrirPlanos = {
+                                    navController.navigate("planos")
                                 }
                             )
                         }
 
-                        // GASTRONOMIA
                         composable("gastronomia") {
                             GastronomiaScreen(
                                 onVoltar = { navController.popBackStack() },
@@ -72,49 +88,74 @@ class MainActivity : ComponentActivity() {
                                 ?: Restaurantes.lista.first()
                             DetalheScreen(
                                 restaurante = restaurante,
+                                viewModel = favoritosVM,
                                 onVoltar = { navController.popBackStack() }
                             )
                         }
 
-                        // MODA
                         composable("moda") {
                             ModaScreen(
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item/${item.id}")
+                                    navController.navigate("detalhe_item_moda/${item.id}")
                                 }
                             )
                         }
 
-                        composable("detalhe_item/{id}") { backStackEntry ->
+                        composable("detalhe_item_moda/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
-                            val item = Moda.lista.find { it.id == id }
-                                ?: Viagens.lista.find { it.id == id }
-                                ?: Beleza.lista.find { it.id == id }
-                                ?: Moda.lista.first()
+                            val item = Moda.lista.find { it.id == id } ?: Moda.lista.first()
                             DetalheItemScreen(
                                 item = item,
+                                tipo = "moda",
+                                viewModel = favoritosVM,
                                 onVoltar = { navController.popBackStack() }
                             )
                         }
 
-                        // VIAGENS
                         composable("viagens") {
                             ViagensScreen(
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item/${item.id}")
+                                    navController.navigate("detalhe_item_viagem/${item.id}")
                                 }
                             )
                         }
 
-                        // BELEZA
+                        composable("detalhe_item_viagem/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val item = Viagens.lista.find { it.id == id } ?: Viagens.lista.first()
+                            DetalheItemScreen(
+                                item = item,
+                                tipo = "viagem",
+                                viewModel = favoritosVM,
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
                         composable("beleza") {
                             BelezaScreen(
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item/${item.id}")
+                                    navController.navigate("detalhe_item_beleza/${item.id}")
                                 }
+                            )
+                        }
+
+                        composable("detalhe_item_beleza/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val item = Beleza.lista.find { it.id == id } ?: Beleza.lista.first()
+                            DetalheItemScreen(
+                                item = item,
+                                tipo = "beleza",
+                                viewModel = favoritosVM,
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("planos") {
+                            PlanosScreen(
+                                onVoltar = { navController.popBackStack() }
                             )
                         }
                     }

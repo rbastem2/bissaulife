@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Restaurante
 import com.bissaulife.app.theme.BissauGreen
 
@@ -35,10 +36,11 @@ import com.bissaulife.app.theme.BissauGreen
 @Composable
 fun DetalheScreen(
     restaurante: Restaurante,
+    viewModel: FavoritosViewModel,
     onVoltar: () -> Unit
 ) {
-    var favorito by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val favorito = viewModel.isRestauranteFav(restaurante.id)
 
     fun abrirTelefone() {
         val numero = restaurante.telefone.replace(" ", "").replace("-", "")
@@ -139,17 +141,9 @@ fun DetalheScreen(
                 Spacer(Modifier.height(8.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        restaurante.categoria,
-                        fontSize = 13.sp,
-                        color = Color.Gray
-                    )
+                    Text(restaurante.categoria, fontSize = 13.sp, color = Color.Gray)
                     Spacer(Modifier.width(12.dp))
-                    Text(
-                        restaurante.distancia,
-                        fontSize = 13.sp,
-                        color = Color.Gray
-                    )
+                    Text(restaurante.distancia, fontSize = 13.sp, color = Color.Gray)
                 }
 
                 Spacer(Modifier.height(20.dp))
@@ -166,11 +160,7 @@ fun DetalheScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                "Preco medio",
-                                fontSize = 12.sp,
-                                color = Color.Gray
-                            )
+                            Text("Preco medio", fontSize = 12.sp, color = Color.Gray)
                             Text(
                                 "A partir de ${restaurante.preco}",
                                 fontSize = 18.sp,
@@ -183,12 +173,7 @@ fun DetalheScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Sobre",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Sobre", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
                 Text(
                     restaurante.descricao,
@@ -199,53 +184,22 @@ fun DetalheScreen(
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Telefone",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Telefone", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    restaurante.telefone,
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
+                Text(restaurante.telefone, fontSize = 14.sp, color = Color(0xFF444444))
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Endereco",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Endereco", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    restaurante.endereco,
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
+                Text(restaurante.endereco, fontSize = 14.sp, color = Color(0xFF444444))
 
                 Spacer(Modifier.height(20.dp))
 
-                Text(
-                    "Horario",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
+                Text("Horario", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
                 Spacer(Modifier.height(8.dp))
-                Text(
-                    "Segunda a Sabado: 11h as 23h",
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
-                Text(
-                    "Domingo: 12h as 22h",
-                    fontSize = 14.sp,
-                    color = Color(0xFF444444)
-                )
+                Text("Segunda a Sabado: 11h as 23h", fontSize = 14.sp, color = Color(0xFF444444))
+                Text("Domingo: 12h as 22h", fontSize = 14.sp, color = Color(0xFF444444))
 
                 Spacer(Modifier.height(110.dp))
             }
@@ -264,7 +218,7 @@ fun DetalheScreen(
         }
 
         IconButton(
-            onClick = { favorito = !favorito },
+            onClick = { viewModel.toggleRestaurante(restaurante.id) },
             modifier = Modifier
                 .padding(16.dp)
                 .size(44.dp)
@@ -292,9 +246,7 @@ fun DetalheScreen(
             ) {
                 Button(
                     onClick = { abrirTelefone() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
+                    modifier = Modifier.weight(1f).height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                     shape = RoundedCornerShape(28.dp)
                 ) {
@@ -305,9 +257,7 @@ fun DetalheScreen(
 
                 Button(
                     onClick = { abrirMaps() },
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(56.dp),
+                    modifier = Modifier.weight(1f).height(56.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
                     shape = RoundedCornerShape(28.dp)
                 ) {
