@@ -1,0 +1,285 @@
+package com.bissaulife.app.screens
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.DirectionsCar
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Hotel
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Tour
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.Viagens
+import com.bissaulife.app.theme.BissauGreen
+
+data class CategoriaViagem(val nome: String, val icone: ImageVector, val cor: Color)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ViagensScreen(
+    onVoltar: () -> Unit,
+    onVerDetalhes: (Item) -> Unit
+) {
+    var categoriaSelecionada by remember { mutableStateOf("") }
+
+    val listaFiltrada = remember(categoriaSelecionada) {
+        if (categoriaSelecionada.isEmpty()) Viagens.lista
+        else Viagens.lista.filter { it.categoria.contains(categoriaSelecionada, true) }
+    }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Viagens", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                },
+                navigationIcon = {
+                    IconButton(onClick = onVoltar) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black
+                )
+            )
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Color.White),
+            contentPadding = PaddingValues(bottom = 24.dp)
+        ) {
+            item {
+                BannerViagens()
+                Spacer(Modifier.height(16.dp))
+            }
+
+            item {
+                CategoriasViagemRow(
+                    selecionada = categoriaSelecionada,
+                    onSelecionar = { nova ->
+                        categoriaSelecionada = if (categoriaSelecionada == nova) "" else nova
+                    }
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Destaques",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(Modifier.weight(1f))
+                    Text(
+                        "Ver todos >",
+                        fontSize = 13.sp,
+                        color = Color(0xFF2196F3),
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+                Spacer(Modifier.height(12.dp))
+            }
+
+            items(listaFiltrada) { item ->
+                ItemViagem(item = item, onClick = { onVerDetalhes(item) })
+                Spacer(Modifier.height(12.dp))
+            }
+        }
+    }
+}
+
+@Composable
+fun BannerViagens() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .height(180.dp)
+            .clip(RoundedCornerShape(20.dp))
+    ) {
+        AsyncImage(
+            model = "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=800&q=80",
+            contentDescription = "Guine-Bissau",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.7f),
+                            Color.Black.copy(alpha = 0.1f)
+                        )
+                    )
+                )
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                "Explore a Guine-Bissau",
+                color = Color.White,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Ilhas, cultura, natureza e aventura",
+                color = Color.White.copy(alpha = 0.9f),
+                fontSize = 13.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun CategoriasViagemRow(
+    selecionada: String,
+    onSelecionar: (String) -> Unit
+) {
+    val categorias = listOf(
+        CategoriaViagem("Hoteis", Icons.Filled.Hotel, Color(0xFF2196F3)),
+        CategoriaViagem("Casas", Icons.Filled.Home, Color(0xFF4CAF50)),
+        CategoriaViagem("Passeios", Icons.Filled.Tour, Color(0xFF2196F3)),
+        CategoriaViagem("Transporte", Icons.Filled.DirectionsCar, Color(0xFF3F51B5))
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        categorias.forEach { cat ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .clickable { onSelecionar(cat.nome) }
+                    .padding(4.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (selecionada == cat.nome) cat.cor
+                            else cat.cor.copy(alpha = 0.85f)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(cat.icone, contentDescription = null, tint = Color.White, modifier = Modifier.size(28.dp))
+                }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    cat.nome,
+                    fontSize = 11.sp,
+                    color = Color.Black,
+                    fontWeight = if (selecionada == cat.nome) FontWeight.Bold else FontWeight.Normal
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ItemViagem(item: Item, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clickable(onClick = onClick)
+            .clip(RoundedCornerShape(12.dp)),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        AsyncImage(
+            model = item.imagemUrl,
+            contentDescription = item.nome,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(110.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                item.nome,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "A partir de ${item.preco}",
+                fontSize = 13.sp,
+                color = Color(0xFF666666)
+            )
+            Spacer(Modifier.height(6.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.Star,
+                    contentDescription = null,
+                    tint = Color(0xFFFFC107),
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(Modifier.width(3.dp))
+                Text(
+                    "${item.nota}",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFFFF9800)
+                )
+                Spacer(Modifier.width(3.dp))
+                Text(
+                    "(${item.avaliacoes})",
+                    fontSize = 11.sp,
+                    color = Color.Gray
+                )
+            }
+        }
+
+        Icon(
+            Icons.Filled.ArrowForwardIos,
+            contentDescription = null,
+            tint = Color.Gray,
+            modifier = Modifier.size(16.dp)
+        )
+    }
+}
