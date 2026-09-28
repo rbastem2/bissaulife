@@ -2,10 +2,10 @@ package com.bissaulife.app.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -19,14 +19,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.R
 import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
@@ -92,20 +94,14 @@ fun SobreScreen(onVoltar: () -> Unit) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // LOGO
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "BissauLife",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(24.dp))
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color(0xFF003366), Color(0xFF00A86B))
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("🌍", fontSize = 54.sp)
-            }
+            )
 
             Spacer(Modifier.height(14.dp))
 
@@ -123,7 +119,6 @@ fun SobreScreen(onVoltar: () -> Unit) {
 
             Spacer(Modifier.height(24.dp))
 
-            // DESCRICAO
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -153,7 +148,6 @@ fun SobreScreen(onVoltar: () -> Unit) {
 
             Spacer(Modifier.height(14.dp))
 
-            // ESTATISTICAS
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -173,7 +167,6 @@ fun SobreScreen(onVoltar: () -> Unit) {
 
             Spacer(Modifier.height(14.dp))
 
-            // CONTATO
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -220,14 +213,14 @@ fun SobreScreen(onVoltar: () -> Unit) {
             Spacer(Modifier.height(24.dp))
 
             Text(
-                "Feito com ❤️ na Guine-Bissau",
+                "Feito com carinho na Guine-Bissau",
                 fontSize = 12.sp,
                 color = Color.Gray,
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "© 2025 BissauLife. Todos os direitos reservados.",
+                "(c) 2025 BissauLife. Todos os direitos reservados.",
                 fontSize = 11.sp,
                 color = Color.LightGray,
                 textAlign = TextAlign.Center

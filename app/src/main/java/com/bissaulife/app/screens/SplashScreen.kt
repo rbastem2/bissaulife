@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,12 +11,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.R
 import com.bissaulife.app.theme.BissauGreen
 
 @Composable
@@ -39,14 +44,14 @@ fun SplashScreen() {
         ) {
             Spacer(Modifier.weight(1f))
 
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "BissauLife Logo",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(120.dp)
-                    .background(Color.White, RoundedCornerShape(24.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("🌍", fontSize = 60.sp)
-            }
+                    .size(140.dp)
+                    .clip(RoundedCornerShape(28.dp))
+            )
 
             Spacer(Modifier.height(24.dp))
 
@@ -76,7 +81,7 @@ fun SplashScreen() {
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
                 shape = RoundedCornerShape(28.dp)
             ) {
-                Text("Começar", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                Text("Comecar", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(Modifier.height(12.dp))

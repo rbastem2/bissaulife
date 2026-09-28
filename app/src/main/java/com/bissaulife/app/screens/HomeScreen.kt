@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,9 +18,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.R
 import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.data.Restaurante
@@ -96,7 +100,10 @@ fun HomeScreen(
                 .padding(padding)
         ) {
             when (abaAtual) {
-                0 -> ConteudoInicio(onAbrirCategoria)
+                0 -> ConteudoInicio(
+                    onAbrirCategoria = onAbrirCategoria,
+                    onAbrirBusca = { abaAtual = 1 }
+                )
                 1 -> ExplorarScreen(
                     onAbrirRestaurante = onAbrirRestaurante,
                     onAbrirItem = onAbrirItem
@@ -118,7 +125,10 @@ fun HomeScreen(
 }
 
 @Composable
-fun ConteudoInicio(onAbrirCategoria: (String) -> Unit) {
+fun ConteudoInicio(
+    onAbrirCategoria: (String) -> Unit,
+    onAbrirBusca: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -129,7 +139,7 @@ fun ConteudoInicio(onAbrirCategoria: (String) -> Unit) {
         Spacer(Modifier.height(16.dp))
         CategoriasGrid(onCategoriaClick = onAbrirCategoria)
         Spacer(Modifier.height(16.dp))
-        BarraBusca()
+        BarraBusca(onClick = onAbrirBusca)
         Spacer(Modifier.height(16.dp))
         BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
         Spacer(Modifier.height(24.dp))
@@ -155,15 +165,14 @@ fun Cabecalho() {
             verticalArrangement = Arrangement.Center
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = "BissauLife",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(56.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("🌍", fontSize = 28.sp)
-                }
+                )
                 Spacer(Modifier.width(12.dp))
                 Column {
                     Text(
@@ -229,18 +238,31 @@ fun CategoriasGrid(onCategoriaClick: (String) -> Unit) {
 }
 
 @Composable
-fun BarraBusca() {
-    OutlinedTextField(
-        value = "",
-        onValueChange = {},
+fun BarraBusca(onClick: () -> Unit) {
+    Surface(
+        shape = RoundedCornerShape(28.dp),
+        color = Color.White,
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDDDDDD)),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        placeholder = { Text("Pesquisar servicos, produtos, lugares...", fontSize = 13.sp) },
-        leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
-        shape = RoundedCornerShape(28.dp),
-        singleLine = true
-    )
+            .padding(horizontal = 16.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(Icons.Filled.Search, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(12.dp))
+            Text(
+                "Pesquisar servicos, produtos, lugares...",
+                fontSize = 13.sp,
+                color = Color.Gray
+            )
+        }
+    }
 }
 
 @Composable
