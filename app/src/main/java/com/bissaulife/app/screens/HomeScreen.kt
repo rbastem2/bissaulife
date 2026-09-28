@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bissaulife.app.R
+import com.bissaulife.app.data.AuthRepository
 import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.data.Restaurante
@@ -40,9 +41,20 @@ fun HomeScreen(
     onAbrirPlanos: () -> Unit,
     onAbrirIdiomas: () -> Unit,
     onAbrirSobre: () -> Unit,
-    onAbrirDefinicoes: () -> Unit
+    onAbrirDefinicoes: () -> Unit,
+    onAbrirLogin: () -> Unit,
+    onAbrirCadastroNegocio: () -> Unit,
+    onLogout: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
+
+    // Verifica estado de login
+    val authRepo = remember { AuthRepository() }
+    var versaoAuth by remember { mutableIntStateOf(0) }
+    val estaLogado = authRepo.estaLogado
+    val emailUsuario = authRepo.emailUsuario()
+    // versaoAuth forca recomposicao ao logar/deslogar
+    versaoAuth
 
     Scaffold(
         bottomBar = {
@@ -114,10 +126,18 @@ fun HomeScreen(
                     onAbrirItem = onAbrirItem
                 )
                 3 -> PerfilScreen(
+                    estaLogado = estaLogado,
+                    emailUsuario = emailUsuario,
                     onAbrirPlanos = onAbrirPlanos,
                     onAbrirIdiomas = onAbrirIdiomas,
                     onAbrirSobre = onAbrirSobre,
-                    onAbrirDefinicoes = onAbrirDefinicoes
+                    onAbrirDefinicoes = onAbrirDefinicoes,
+                    onAbrirLogin = onAbrirLogin,
+                    onAbrirCadastroNegocio = onAbrirCadastroNegocio,
+                    onLogout = {
+                        authRepo.logout()
+                        versaoAuth++
+                    }
                 )
             }
         }

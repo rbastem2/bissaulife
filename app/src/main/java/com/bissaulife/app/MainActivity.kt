@@ -14,12 +14,14 @@ import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
 import com.bissaulife.app.screens.BelezaScreen
+import com.bissaulife.app.screens.CadastroNegocioScreen
 import com.bissaulife.app.screens.DefinicoesScreen
 import com.bissaulife.app.screens.DetalheItemScreen
 import com.bissaulife.app.screens.DetalheScreen
 import com.bissaulife.app.screens.GastronomiaScreen
 import com.bissaulife.app.screens.HomeScreen
 import com.bissaulife.app.screens.IdiomasScreen
+import com.bissaulife.app.screens.LoginScreen
 import com.bissaulife.app.screens.ModaScreen
 import com.bissaulife.app.screens.PlanosScreen
 import com.bissaulife.app.screens.SobreScreen
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 var showSplash by remember { mutableStateOf(true) }
                 val navController = rememberNavController()
                 val favoritosVM: FavoritosViewModel = viewModel()
+                var versaoRecomposicao by remember { mutableIntStateOf(0) }
 
                 LaunchedEffect(Unit) {
                     delay(2500)
@@ -50,6 +53,8 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home"
                     ) {
                         composable("home") {
+                            // Forca recomposicao do home quando volta de login
+                            versaoRecomposicao
                             HomeScreen(
                                 viewModel = favoritosVM,
                                 onAbrirCategoria = { categoria ->
@@ -73,7 +78,10 @@ class MainActivity : ComponentActivity() {
                                 onAbrirPlanos = { navController.navigate("planos") },
                                 onAbrirIdiomas = { navController.navigate("idiomas") },
                                 onAbrirSobre = { navController.navigate("sobre") },
-                                onAbrirDefinicoes = { navController.navigate("definicoes") }
+                                onAbrirDefinicoes = { navController.navigate("definicoes") },
+                                onAbrirLogin = { navController.navigate("login") },
+                                onAbrirCadastroNegocio = { navController.navigate("cadastro_negocio") },
+                                onLogout = { versaoRecomposicao++ }
                             )
                         }
 
@@ -178,6 +186,25 @@ class MainActivity : ComponentActivity() {
                         composable("definicoes") {
                             DefinicoesScreen(
                                 onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("login") {
+                            LoginScreen(
+                                onVoltar = { navController.popBackStack() },
+                                onLoginSucesso = {
+                                    versaoRecomposicao++
+                                    navController.popBackStack()
+                                }
+                            )
+                        }
+
+                        composable("cadastro_negocio") {
+                            CadastroNegocioScreen(
+                                onVoltar = { navController.popBackStack() },
+                                onSucesso = {
+                                    navController.popBackStack()
+                                }
                             )
                         }
                     }

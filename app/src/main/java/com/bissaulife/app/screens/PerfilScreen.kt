@@ -29,10 +29,15 @@ private const val WHATSAPP_COMERCIAL = "245955572393"
 
 @Composable
 fun PerfilScreen(
+    estaLogado: Boolean,
+    emailUsuario: String,
     onAbrirPlanos: () -> Unit,
     onAbrirIdiomas: () -> Unit,
     onAbrirSobre: () -> Unit,
-    onAbrirDefinicoes: () -> Unit
+    onAbrirDefinicoes: () -> Unit,
+    onAbrirLogin: () -> Unit,
+    onAbrirCadastroNegocio: () -> Unit,
+    onLogout: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -51,6 +56,7 @@ fun PerfilScreen(
             .background(Color(0xFFF5F5F5))
             .verticalScroll(rememberScrollState())
     ) {
+        // Cabecalho
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -77,17 +83,18 @@ fun PerfilScreen(
                     )
                 }
                 Spacer(Modifier.width(16.dp))
-                Column {
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        "Meu perfil",
+                        if (estaLogado) "Meu perfil" else "Visitante",
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        "Utilizador BissauLife",
+                        if (estaLogado) emailUsuario else "Toque em entrar para acessar",
                         color = Color.White.copy(alpha = 0.85f),
-                        fontSize = 13.sp
+                        fontSize = 12.sp,
+                        maxLines = 1
                     )
                 }
             }
@@ -95,6 +102,44 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
+        // Botao Entrar / Sair
+        if (!estaLogado) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = BissauGreen),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clickable { onAbrirLogin() }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(Icons.Filled.Login, null, tint = Color.White, modifier = Modifier.size(24.dp))
+                    Spacer(Modifier.width(14.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Entrar ou criar conta",
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Para anunciar seu negocio",
+                            color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 12.sp
+                        )
+                    }
+                    Icon(Icons.Filled.ArrowForwardIos, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+
+        // Card Premium
         Card(
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(containerColor = Color.Transparent),
@@ -117,37 +162,19 @@ fun PerfilScreen(
                     Text("⭐", fontSize = 40.sp)
                     Spacer(Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            "Torne-se Destaque",
-                            color = Color.White,
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            "Apareca no topo da busca",
-                            color = Color.White.copy(alpha = 0.95f),
-                            fontSize = 12.sp
-                        )
+                        Text("Torne-se Destaque", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text("Apareca no topo da busca", color = Color.White.copy(alpha = 0.95f), fontSize = 12.sp)
                         Spacer(Modifier.height(4.dp))
-                        Text(
-                            "A partir de 8.000 FCFA/semestre",
-                            color = Color.White,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Text("A partir de 8.000 FCFA/semestre", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                     }
-                    Icon(
-                        Icons.Filled.ArrowForwardIos,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp)
-                    )
+                    Icon(Icons.Filled.ArrowForwardIos, null, tint = Color.White, modifier = Modifier.size(18.dp))
                 }
             }
         }
 
         Spacer(Modifier.height(16.dp))
 
+        // Menu principal
         Card(
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -159,14 +186,16 @@ fun PerfilScreen(
                 ItemMenu(
                     icone = Icons.Filled.Store,
                     titulo = "Anunciar minha loja",
-                    subtitulo = "Fale com nosso comercial",
-                    onClick = { abrirWhatsAppComercial() }
+                    subtitulo = if (estaLogado) "Cadastrar novo negocio" else "Faca login primeiro",
+                    onClick = {
+                        if (estaLogado) onAbrirCadastroNegocio() else onAbrirLogin()
+                    }
                 )
                 Divider(color = Color(0xFFEEEEEE))
                 ItemMenu(
                     icone = Icons.Filled.BusinessCenter,
                     titulo = "Area do comerciante",
-                    subtitulo = "Gerir anuncios e pagamentos",
+                    subtitulo = "Fale com nosso comercial",
                     onClick = { abrirWhatsAppComercial() }
                 )
                 Divider(color = Color(0xFFEEEEEE))
@@ -180,7 +209,7 @@ fun PerfilScreen(
                 ItemMenu(
                     icone = Icons.Filled.Info,
                     titulo = "Sobre o BissauLife",
-                    subtitulo = "Versao 1.1",
+                    subtitulo = "Versao 1.2",
                     onClick = onAbrirSobre
                 )
                 Divider(color = Color(0xFFEEEEEE))
@@ -193,8 +222,29 @@ fun PerfilScreen(
             }
         }
 
+        // Botao Sair (se logado)
+        if (estaLogado) {
+            Spacer(Modifier.height(16.dp))
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            ) {
+                ItemMenu(
+                    icone = Icons.Filled.Logout,
+                    titulo = "Sair da conta",
+                    subtitulo = "Desconectar do aplicativo",
+                    onClick = onLogout,
+                    corIcone = Color(0xFFE53935)
+                )
+            }
+        }
+
         Spacer(Modifier.height(16.dp))
 
+        // Banner final
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -211,12 +261,7 @@ fun PerfilScreen(
         ) {
             Column {
                 Text("Juntos fazemos", color = Color.White, fontSize = 14.sp)
-                Text(
-                    "Bissau crescer!",
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("Bissau crescer!", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
                 Text("💚❤️💛", fontSize = 18.sp)
             }
@@ -231,7 +276,8 @@ fun ItemMenu(
     icone: ImageVector,
     titulo: String,
     subtitulo: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    corIcone: Color = BissauGreen
 ) {
     Row(
         modifier = Modifier
@@ -240,22 +286,12 @@ fun ItemMenu(
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(icone, contentDescription = null, tint = BissauGreen, modifier = Modifier.size(24.dp))
+        Icon(icone, contentDescription = null, tint = corIcone, modifier = Modifier.size(24.dp))
         Spacer(Modifier.width(14.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                titulo,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black
-            )
+            Text(titulo, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = Color.Black)
             Text(subtitulo, fontSize = 12.sp, color = Color.Gray)
         }
-        Icon(
-            Icons.Filled.ArrowForwardIos,
-            contentDescription = null,
-            tint = Color.LightGray,
-            modifier = Modifier.size(14.dp)
-        )
+        Icon(Icons.Filled.ArrowForwardIos, null, tint = Color.LightGray, modifier = Modifier.size(14.dp))
     }
 }
