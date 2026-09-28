@@ -1,7 +1,6 @@
 package com.bissaulife.app.data
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
 class NegocioRepository {
@@ -25,52 +24,10 @@ class NegocioRepository {
         }
     }
 
-    // Listar negocios aprovados (para o app do usuario final)
-    suspend fun listarAprovados(): Result<List<Negocio>> {
+    // Listar todos os negocios (sem filtro — usamos filtro local)
+    suspend fun listarTodos(): Result<List<Negocio>> {
         return try {
-            val snapshot = colecao
-                .whereEqualTo("status", "aprovado")
-                .orderBy("destaque", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
-            val lista = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Negocio::class.java)
-            }
-            Result.success(lista)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    // Listar negocios por categoria
-    suspend fun listarPorCategoria(categoria: String): Result<List<Negocio>> {
-        return try {
-            val snapshot = colecao
-                .whereEqualTo("status", "aprovado")
-                .whereEqualTo("categoria", categoria)
-                .orderBy("destaque", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
-            val lista = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(Negocio::class.java)
-            }
-            Result.success(lista)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    // Listar negocios pendentes (para o painel admin)
-    suspend fun listarPendentes(): Result<List<Negocio>> {
-        return try {
-            val snapshot = colecao
-                .whereEqualTo("status", "pendente")
-                .orderBy("dataCadastro", Query.Direction.DESCENDING)
-                .get()
-                .await()
-
+            val snapshot = colecao.get().await()
             val lista = snapshot.documents.mapNotNull { doc ->
                 doc.toObject(Negocio::class.java)
             }
