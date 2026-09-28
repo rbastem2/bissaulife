@@ -34,7 +34,8 @@ import com.bissaulife.app.theme.BissauGreen
 fun GastronomiaScreen(
     negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
-    onVerDetalhes: (Restaurante) -> Unit
+    onVerDetalhes: (Restaurante) -> Unit,
+    onVerNegocio: (Negocio) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
     val filtros = listOf("Todos", "Restaurantes", "Comida típica", "Bolos")
@@ -84,7 +85,6 @@ fun GastronomiaScreen(
                 .padding(padding)
                 .background(Color.White)
         ) {
-            // Filtros
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,7 +115,6 @@ fun GastronomiaScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Secao de novos negocios do Firestore
                 if (novosNegocios.isNotEmpty()) {
                     item {
                         Text(
@@ -127,7 +126,10 @@ fun GastronomiaScreen(
                         )
                     }
                     items(novosNegocios) { negocio ->
-                        CardNegocio(negocio)
+                        CardNegocio(
+                            negocio = negocio,
+                            onClick = { onVerNegocio(negocio) }
+                        )
                     }
                     item {
                         Spacer(Modifier.height(8.dp))
@@ -141,7 +143,6 @@ fun GastronomiaScreen(
                     }
                 }
 
-                // Lista padrao
                 items(listaFiltrada) { restaurante ->
                     CardRestaurante(
                         restaurante = restaurante,
@@ -154,7 +155,7 @@ fun GastronomiaScreen(
 }
 
 @Composable
-fun CardNegocio(negocio: Negocio) {
+fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -176,63 +177,61 @@ fun CardNegocio(negocio: Negocio) {
                     .background(BissauGreen.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🏪", fontSize = 40.sp)
+                Text("🍽️", fontSize = 40.sp)
             }
         }
 
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                negocio.nome,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
-            Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     shape = RoundedCornerShape(6.dp),
-                    color = BissauGreen.copy(alpha = 0.15f)
+                    color = BissauGreen
                 ) {
                     Text(
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         fontSize = 9.sp,
-                        color = BissauGreen,
+                        color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }
                 Spacer(Modifier.width(6.dp))
-                Text(
-                    negocio.subcategoria,
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
             }
             Spacer(Modifier.height(4.dp))
-            Text(
-                negocio.descricao,
-                fontSize = 12.sp,
-                color = Color(0xFF666666),
-                maxLines = 2
-            )
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+
+            Spacer(Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
+                Spacer(Modifier.width(4.dp))
+                Text("5.0", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
+                Spacer(Modifier.width(4.dp))
+                Text("(Novo)", fontSize = 11.sp, color = Color.Gray)
+            }
+
+            Spacer(Modifier.height(4.dp))
+            Text(negocio.descricao, fontSize = 12.sp, color = Color(0xFF666666), maxLines = 2)
             if (negocio.preco.isNotBlank()) {
                 Spacer(Modifier.height(6.dp))
-                Text(
-                    negocio.preco,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = BissauGreen
-                )
+                Text(negocio.preco, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = BissauGreen)
             }
             Spacer(Modifier.height(6.dp))
-            Text(
-                "📍 ${negocio.endereco}",
-                fontSize = 11.sp,
-                color = Color.Gray,
-                maxLines = 1
-            )
+            Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
+                shape = RoundedCornerShape(20.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                modifier = Modifier.height(34.dp)
+            ) {
+                Text("Ver detalhes", fontSize = 12.sp)
+            }
         }
     }
 }
@@ -257,34 +256,15 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                restaurante.nome,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
+            Text(restaurante.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black)
             Spacer(Modifier.height(4.dp))
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(16.dp)
-                )
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(4.dp))
-                Text(
-                    "${restaurante.nota}",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp,
-                    color = Color(0xFFFF9800)
-                )
+                Text("${restaurante.nota}", fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = Color(0xFFFF9800))
                 Spacer(Modifier.width(4.dp))
-                Text(
-                    "(${restaurante.avaliacoes})",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                Text("(${restaurante.avaliacoes})", fontSize = 12.sp, color = Color.Gray)
             }
 
             Spacer(Modifier.height(4.dp))
@@ -293,17 +273,8 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    restaurante.categoria,
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    "📍 ${restaurante.distancia}",
-                    fontSize = 11.sp,
-                    color = Color.Gray
-                )
+                Text(restaurante.categoria, fontSize = 12.sp, color = Color.Gray, modifier = Modifier.weight(1f))
+                Text("📍 ${restaurante.distancia}", fontSize = 11.sp, color = Color.Gray)
             }
 
             Spacer(Modifier.height(8.dp))

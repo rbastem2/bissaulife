@@ -36,7 +36,8 @@ import com.bissaulife.app.theme.BissauGreen
 fun ModaScreen(
     negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
-    onVerDetalhes: (Item) -> Unit
+    onVerDetalhes: (Item) -> Unit,
+    onVerNegocio: (Negocio) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
     val filtros = listOf("Todos", "Roupas", "Calcados", "Bolsas", "Acessorios")
@@ -113,7 +114,10 @@ fun ModaScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(novosNegocios) { negocio ->
-                    CardNegocioModa(negocio)
+                    CardNegocioModa(
+                        negocio = negocio,
+                        onClick = { onVerNegocio(negocio) }
+                    )
                 }
                 items(listaFiltrada) { item ->
                     CardProduto(item = item, onClick = { onVerDetalhes(item) })
@@ -124,12 +128,12 @@ fun ModaScreen(
 }
 
 @Composable
-fun CardNegocioModa(negocio: Negocio) {
+fun CardNegocioModa(negocio: Negocio, onClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(180.dp)
+                .height(160.dp)
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color(0xFFF5F5F5))
         ) {
@@ -173,30 +177,37 @@ fun CardNegocioModa(negocio: Negocio) {
             color = Color.Black,
             maxLines = 1
         )
-        Spacer(Modifier.height(2.dp))
+
+        Spacer(Modifier.height(3.dp))
+
+        // Estrela
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(13.dp))
+            Spacer(Modifier.width(3.dp))
+            Text("5.0", fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
+            Spacer(Modifier.width(3.dp))
+            Text("(Novo)", fontSize = 10.sp, color = Color.Gray)
+        }
+
+        Spacer(Modifier.height(3.dp))
         Text(
             negocio.preco.ifBlank { "Sob consulta" },
             fontSize = 13.sp,
             color = Color(0xFF666666)
         )
+
         Spacer(Modifier.height(6.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
-            Spacer(Modifier.weight(1f))
-            Box(
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(CircleShape)
-                    .background(BissauGreen),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    Icons.Filled.AddShoppingCart,
-                    contentDescription = "Adicionar",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
-            }
+
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
+            shape = RoundedCornerShape(18.dp),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(32.dp)
+        ) {
+            Text("Ver detalhes", fontSize = 11.sp)
         }
     }
 }

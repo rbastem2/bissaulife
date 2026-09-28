@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import com.bissaulife.app.screens.BelezaScreen
 import com.bissaulife.app.screens.CadastroNegocioScreen
 import com.bissaulife.app.screens.DefinicoesScreen
 import com.bissaulife.app.screens.DetalheItemScreen
+import com.bissaulife.app.screens.DetalheNegocioScreen
 import com.bissaulife.app.screens.DetalheScreen
 import com.bissaulife.app.screens.GastronomiaScreen
 import com.bissaulife.app.screens.HomeScreen
@@ -29,7 +31,12 @@ import com.bissaulife.app.screens.PlanosScreen
 import com.bissaulife.app.screens.SobreScreen
 import com.bissaulife.app.screens.SplashScreen
 import com.bissaulife.app.screens.ViagensScreen
+import com.bissaulife.app.theme.BissauBlue
+import com.bissaulife.app.theme.BissauGreen
 import com.bissaulife.app.theme.BissauLifeTheme
+import com.bissaulife.app.theme.BissauOrange
+import com.bissaulife.app.theme.BissauPink
+import com.bissaulife.app.theme.BissauPurple
 import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
@@ -94,8 +101,76 @@ class MainActivity : ComponentActivity() {
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { restaurante ->
                                     navController.navigate("detalhe_restaurante/${restaurante.id}")
+                                },
+                                onVerNegocio = { negocio ->
+                                    navController.navigate("detalhe_negocio/${negocio.id}")
                                 }
                             )
+                        }
+
+                        composable("moda") {
+                            ModaScreen(
+                                negociosVM = negociosVM,
+                                onVoltar = { navController.popBackStack() },
+                                onVerDetalhes = { item ->
+                                    navController.navigate("detalhe_item_moda/${item.id}")
+                                },
+                                onVerNegocio = { negocio ->
+                                    navController.navigate("detalhe_negocio/${negocio.id}")
+                                }
+                            )
+                        }
+
+                        composable("viagens") {
+                            ViagensScreen(
+                                negociosVM = negociosVM,
+                                onVoltar = { navController.popBackStack() },
+                                onVerDetalhes = { item ->
+                                    navController.navigate("detalhe_item_viagem/${item.id}")
+                                },
+                                onVerNegocio = { negocio ->
+                                    navController.navigate("detalhe_negocio/${negocio.id}")
+                                }
+                            )
+                        }
+
+                        composable("beleza") {
+                            BelezaScreen(
+                                negociosVM = negociosVM,
+                                onVoltar = { navController.popBackStack() },
+                                onVerDetalhes = { item ->
+                                    navController.navigate("detalhe_item_beleza/${item.id}")
+                                },
+                                onVerNegocio = { negocio ->
+                                    navController.navigate("detalhe_negocio/${negocio.id}")
+                                }
+                            )
+                        }
+
+                        // Tela de detalhes do negocio do Firestore
+                        composable("detalhe_negocio/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val negocio = negociosVM.aprovados.find { it.id == id }
+
+                            if (negocio != null) {
+                                val cor = when (negocio.categoria.lowercase()) {
+                                    "gastronomia" -> BissauOrange
+                                    "moda" -> BissauPurple
+                                    "viagens" -> BissauBlue
+                                    "beleza" -> BissauPink
+                                    else -> BissauGreen
+                                }
+                                DetalheNegocioScreen(
+                                    negocio = negocio,
+                                    corCategoria = cor,
+                                    onVoltar = { navController.popBackStack() }
+                                )
+                            } else {
+                                // Se nao encontrou (ex: negocio foi removido), volta
+                                LaunchedEffect(Unit) {
+                                    navController.popBackStack()
+                                }
+                            }
                         }
 
                         composable("detalhe_restaurante/{id}") { backStackEntry ->
@@ -106,16 +181,6 @@ class MainActivity : ComponentActivity() {
                                 restaurante = restaurante,
                                 viewModel = favoritosVM,
                                 onVoltar = { navController.popBackStack() }
-                            )
-                        }
-
-                        composable("moda") {
-                            ModaScreen(
-                                negociosVM = negociosVM,
-                                onVoltar = { navController.popBackStack() },
-                                onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item_moda/${item.id}")
-                                }
                             )
                         }
 
@@ -130,16 +195,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable("viagens") {
-                            ViagensScreen(
-                                negociosVM = negociosVM,
-                                onVoltar = { navController.popBackStack() },
-                                onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item_viagem/${item.id}")
-                                }
-                            )
-                        }
-
                         composable("detalhe_item_viagem/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val item = Viagens.lista.find { it.id == id } ?: Viagens.lista.first()
@@ -148,16 +203,6 @@ class MainActivity : ComponentActivity() {
                                 tipo = "viagem",
                                 viewModel = favoritosVM,
                                 onVoltar = { navController.popBackStack() }
-                            )
-                        }
-
-                        composable("beleza") {
-                            BelezaScreen(
-                                negociosVM = negociosVM,
-                                onVoltar = { navController.popBackStack() },
-                                onVerDetalhes = { item ->
-                                    navController.navigate("detalhe_item_beleza/${item.id}")
-                                }
                             )
                         }
 

@@ -41,7 +41,8 @@ data class CategoriaViagem(val nome: String, val icone: ImageVector, val cor: Co
 fun ViagensScreen(
     negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
-    onVerDetalhes: (Item) -> Unit
+    onVerDetalhes: (Item) -> Unit,
+    onVerNegocio: (Negocio) -> Unit
 ) {
     var categoriaSelecionada by remember { mutableStateOf("") }
 
@@ -94,7 +95,6 @@ fun ViagensScreen(
                 Spacer(Modifier.height(16.dp))
             }
 
-            // Novos negocios do Firestore
             if (novosNegocios.isNotEmpty()) {
                 item {
                     Text(
@@ -107,7 +107,10 @@ fun ViagensScreen(
                     Spacer(Modifier.height(8.dp))
                 }
                 items(novosNegocios) { negocio ->
-                    ItemViagemNegocio(negocio)
+                    ItemViagemNegocio(
+                        negocio = negocio,
+                        onClick = { onVerNegocio(negocio) }
+                    )
                     Spacer(Modifier.height(12.dp))
                 }
                 item {
@@ -156,13 +159,13 @@ fun ViagensScreen(
 }
 
 @Composable
-fun ItemViagemNegocio(negocio: Negocio) {
+fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(12.dp)),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.Top
     ) {
         if (negocio.imagemUrl.isNotBlank()) {
             AsyncImage(
@@ -206,12 +209,34 @@ fun ItemViagemNegocio(negocio: Negocio) {
             }
             Spacer(Modifier.height(4.dp))
             Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+
+            Spacer(Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
+                Spacer(Modifier.width(4.dp))
+                Text("5.0", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
+                Spacer(Modifier.width(4.dp))
+                Text("(Novo)", fontSize = 11.sp, color = Color.Gray)
+            }
+
             Spacer(Modifier.height(4.dp))
             if (negocio.preco.isNotBlank()) {
                 Text("A partir de ${negocio.preco}", fontSize = 13.sp, color = Color(0xFF666666))
             }
             Spacer(Modifier.height(4.dp))
             Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+
+            Spacer(Modifier.height(8.dp))
+
+            Button(
+                onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
+                shape = RoundedCornerShape(20.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                modifier = Modifier.height(34.dp)
+            ) {
+                Text("Ver detalhes", fontSize = 12.sp)
+            }
         }
     }
 }

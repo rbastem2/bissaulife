@@ -35,7 +35,8 @@ import com.bissaulife.app.theme.BissauPink
 fun BelezaScreen(
     negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
-    onVerDetalhes: (Item) -> Unit
+    onVerDetalhes: (Item) -> Unit,
+    onVerNegocio: (Negocio) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
     val filtros = listOf("Todos", "Cabelo", "Unhas", "Maquiagem", "Spa", "Estetica")
@@ -126,7 +127,10 @@ fun BelezaScreen(
                         )
                     }
                     items(novosNegocios) { negocio ->
-                        CardNegocioBeleza(negocio)
+                        CardNegocioBeleza(
+                            negocio = negocio,
+                            onClick = { onVerNegocio(negocio) }
+                        )
                     }
                     item {
                         Spacer(Modifier.height(8.dp))
@@ -149,7 +153,7 @@ fun BelezaScreen(
 }
 
 @Composable
-fun CardNegocioBeleza(negocio: Negocio) {
+fun CardNegocioBeleza(negocio: Negocio, onClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.Top
@@ -197,6 +201,17 @@ fun CardNegocioBeleza(negocio: Negocio) {
             Spacer(Modifier.height(4.dp))
             Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
             Spacer(Modifier.height(4.dp))
+
+            // Estrela
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
+                Spacer(Modifier.width(4.dp))
+                Text("5.0", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
+                Spacer(Modifier.width(4.dp))
+                Text("(Novo)", fontSize = 11.sp, color = Color.Gray)
+            }
+
+            Spacer(Modifier.height(4.dp))
             Text(negocio.descricao, fontSize = 12.sp, color = Color(0xFF666666), maxLines = 2)
             Spacer(Modifier.height(6.dp))
             if (negocio.preco.isNotBlank()) {
@@ -204,6 +219,19 @@ fun CardNegocioBeleza(negocio: Negocio) {
             }
             Spacer(Modifier.height(4.dp))
             Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+
+            Spacer(Modifier.height(8.dp))
+
+            // BOTAO VER DETALHES
+            Button(
+                onClick = onClick,
+                colors = ButtonDefaults.buttonColors(containerColor = BissauPink),
+                shape = RoundedCornerShape(20.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp),
+                modifier = Modifier.height(34.dp)
+            ) {
+                Text("Ver detalhes", fontSize = 12.sp)
+            }
         }
     }
 }
