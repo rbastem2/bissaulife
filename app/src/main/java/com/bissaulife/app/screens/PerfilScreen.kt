@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
+private const val EMAIL_ADMIN = "rbastem2@gmail.com"
 
 @Composable
 fun PerfilScreen(
@@ -37,9 +38,11 @@ fun PerfilScreen(
     onAbrirDefinicoes: () -> Unit,
     onAbrirLogin: () -> Unit,
     onAbrirCadastroNegocio: () -> Unit,
+    onAbrirAdmin: () -> Unit,
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
+    val ehAdmin = estaLogado && emailUsuario.equals(EMAIL_ADMIN, ignoreCase = true)
 
     fun abrirWhatsAppComercial() {
         val mensagem = "Ola! Vim pelo app BissauLife e quero anunciar minha loja."
@@ -84,12 +87,29 @@ fun PerfilScreen(
                 }
                 Spacer(Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        if (estaLogado) "Meu perfil" else "Visitante",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            if (estaLogado) "Meu perfil" else "Visitante",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (ehAdmin) {
+                            Spacer(Modifier.width(8.dp))
+                            Surface(
+                                shape = RoundedCornerShape(6.dp),
+                                color = Color(0xFFFFC107)
+                            ) {
+                                Text(
+                                    "ADMIN",
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                                    fontSize = 9.sp,
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
                     Text(
                         if (estaLogado) emailUsuario else "Toque em entrar para acessar",
                         color = Color.White.copy(alpha = 0.85f),
@@ -102,7 +122,7 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Botao Entrar / Sair
+        // Botao Entrar (só se NÃO logado)
         if (!estaLogado) {
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -130,6 +150,43 @@ fun PerfilScreen(
                         Text(
                             "Para anunciar seu negocio",
                             color = Color.White.copy(alpha = 0.9f),
+                            fontSize = 12.sp
+                        )
+                    }
+                    Icon(Icons.Filled.ArrowForwardIos, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
+
+        // Card Painel Admin (só aparece para o admin)
+        if (ehAdmin) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF003366)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clickable { onAbrirAdmin() }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("🔐", fontSize = 28.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Painel Admin",
+                            color = Color.White,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Aprovar negocios cadastrados",
+                            color = Color.White.copy(alpha = 0.85f),
                             fontSize = 12.sp
                         )
                     }
@@ -222,7 +279,7 @@ fun PerfilScreen(
             }
         }
 
-        // Botao Sair (se logado)
+        // Botao Sair
         if (estaLogado) {
             Spacer(Modifier.height(16.dp))
             Card(
@@ -244,7 +301,6 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Banner final
         Box(
             modifier = Modifier
                 .fillMaxWidth()

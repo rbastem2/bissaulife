@@ -44,16 +44,15 @@ fun HomeScreen(
     onAbrirDefinicoes: () -> Unit,
     onAbrirLogin: () -> Unit,
     onAbrirCadastroNegocio: () -> Unit,
+    onAbrirAdmin: () -> Unit,
     onLogout: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
 
-    // Verifica estado de login
     val authRepo = remember { AuthRepository() }
     var versaoAuth by remember { mutableIntStateOf(0) }
     val estaLogado = authRepo.estaLogado
     val emailUsuario = authRepo.emailUsuario()
-    // versaoAuth forca recomposicao ao logar/deslogar
     versaoAuth
 
     Scaffold(
@@ -134,9 +133,11 @@ fun HomeScreen(
                     onAbrirDefinicoes = onAbrirDefinicoes,
                     onAbrirLogin = onAbrirLogin,
                     onAbrirCadastroNegocio = onAbrirCadastroNegocio,
+                    onAbrirAdmin = onAbrirAdmin,
                     onLogout = {
                         authRepo.logout()
                         versaoAuth++
+                        onLogout()
                     }
                 )
             }

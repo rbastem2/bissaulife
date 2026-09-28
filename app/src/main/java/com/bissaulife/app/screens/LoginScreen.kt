@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,8 +17,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,6 +29,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.R
 import com.bissaulife.app.data.AuthRepository
 import com.bissaulife.app.theme.BissauGreen
 import kotlinx.coroutines.launch
@@ -105,19 +109,14 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Logo
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "BissauLife",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color(0xFF003366), Color(0xFF00A86B))
-                        ),
-                        RoundedCornerShape(24.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("🌍", fontSize = 54.sp)
-            }
+                    .clip(RoundedCornerShape(24.dp))
+            )
 
             Spacer(Modifier.height(20.dp))
 
@@ -140,7 +139,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(28.dp))
 
-            // Email
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it; erro = "" },
@@ -157,7 +155,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(12.dp))
 
-            // Senha
             OutlinedTextField(
                 value = senha,
                 onValueChange = { senha = it; erro = "" },
@@ -203,7 +200,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Botao principal
             Button(
                 onClick = { executar() },
                 modifier = Modifier
@@ -230,7 +226,6 @@ fun LoginScreen(
 
             Spacer(Modifier.height(16.dp))
 
-            // Alternar modo
             TextButton(onClick = {
                 modoCadastro = !modoCadastro
                 erro = ""

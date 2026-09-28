@@ -13,6 +13,7 @@ import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
+import com.bissaulife.app.screens.AdminScreen
 import com.bissaulife.app.screens.BelezaScreen
 import com.bissaulife.app.screens.CadastroNegocioScreen
 import com.bissaulife.app.screens.DefinicoesScreen
@@ -53,7 +54,6 @@ class MainActivity : ComponentActivity() {
                         startDestination = "home"
                     ) {
                         composable("home") {
-                            // Forca recomposicao do home quando volta de login
                             versaoRecomposicao
                             HomeScreen(
                                 viewModel = favoritosVM,
@@ -81,6 +81,7 @@ class MainActivity : ComponentActivity() {
                                 onAbrirDefinicoes = { navController.navigate("definicoes") },
                                 onAbrirLogin = { navController.navigate("login") },
                                 onAbrirCadastroNegocio = { navController.navigate("cadastro_negocio") },
+                                onAbrirAdmin = { navController.navigate("admin") },
                                 onLogout = { versaoRecomposicao++ }
                             )
                         }
@@ -166,27 +167,19 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable("planos") {
-                            PlanosScreen(
-                                onVoltar = { navController.popBackStack() }
-                            )
+                            PlanosScreen(onVoltar = { navController.popBackStack() })
                         }
 
                         composable("idiomas") {
-                            IdiomasScreen(
-                                onVoltar = { navController.popBackStack() }
-                            )
+                            IdiomasScreen(onVoltar = { navController.popBackStack() })
                         }
 
                         composable("sobre") {
-                            SobreScreen(
-                                onVoltar = { navController.popBackStack() }
-                            )
+                            SobreScreen(onVoltar = { navController.popBackStack() })
                         }
 
                         composable("definicoes") {
-                            DefinicoesScreen(
-                                onVoltar = { navController.popBackStack() }
-                            )
+                            DefinicoesScreen(onVoltar = { navController.popBackStack() })
                         }
 
                         composable("login") {
@@ -202,9 +195,13 @@ class MainActivity : ComponentActivity() {
                         composable("cadastro_negocio") {
                             CadastroNegocioScreen(
                                 onVoltar = { navController.popBackStack() },
-                                onSucesso = {
-                                    navController.popBackStack()
-                                }
+                                onSucesso = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("admin") {
+                            AdminScreen(
+                                onVoltar = { navController.popBackStack() }
                             )
                         }
                     }
