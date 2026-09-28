@@ -27,16 +27,25 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.data.Moda
+import com.bissaulife.app.data.Negocio
+import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.theme.BissauGreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ModaScreen(
+    negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
     onVerDetalhes: (Item) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
     val filtros = listOf("Todos", "Roupas", "Calcados", "Bolsas", "Acessorios")
+
+    LaunchedEffect(Unit) {
+        negociosVM.recarregar()
+    }
+
+    val novosNegocios = negociosVM.porCategoria("Moda")
 
     val listaFiltrada = remember(filtroSelecionado) {
         when (filtroSelecionado) {
@@ -52,9 +61,7 @@ fun ModaScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Moda", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                },
+                title = { Text("Moda", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
@@ -105,9 +112,90 @@ fun ModaScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
+                items(novosNegocios) { negocio ->
+                    CardNegocioModa(negocio)
+                }
                 items(listaFiltrada) { item ->
                     CardProduto(item = item, onClick = { onVerDetalhes(item) })
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardNegocioModa(negocio: Negocio) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFFF5F5F5))
+        ) {
+            if (negocio.imagemUrl.isNotBlank()) {
+                AsyncImage(
+                    model = negocio.imagemUrl,
+                    contentDescription = negocio.nome,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("🛍️", fontSize = 50.sp)
+                }
+            }
+            Surface(
+                shape = RoundedCornerShape(6.dp),
+                color = BissauGreen,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(6.dp)
+            ) {
+                Text(
+                    "NOVO",
+                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                    fontSize = 9.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+        Text(
+            negocio.nome,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = Color.Black,
+            maxLines = 1
+        )
+        Spacer(Modifier.height(2.dp))
+        Text(
+            negocio.preco.ifBlank { "Sob consulta" },
+            fontSize = 13.sp,
+            color = Color(0xFF666666)
+        )
+        Spacer(Modifier.height(6.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
+            Spacer(Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+                    .size(28.dp)
+                    .clip(CircleShape)
+                    .background(BissauGreen),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.AddShoppingCart,
+                    contentDescription = "Adicionar",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
             }
         }
     }
@@ -136,48 +224,19 @@ fun CardProduto(item: Item, onClick: () -> Unit) {
         }
 
         Spacer(Modifier.height(8.dp))
-
-        Text(
-            item.nome,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
-            maxLines = 1
-        )
-
+        Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 1)
         Spacer(Modifier.height(2.dp))
-
-        Text(
-            item.preco,
-            fontSize = 13.sp,
-            color = Color(0xFF666666)
-        )
-
+        Text(item.preco, fontSize = 13.sp, color = Color(0xFF666666))
         Spacer(Modifier.height(6.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                Icons.Filled.Star,
-                contentDescription = null,
-                tint = Color(0xFFFFC107),
-                modifier = Modifier.size(14.dp)
-            )
+            Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(14.dp))
             Spacer(Modifier.width(3.dp))
-            Text(
-                "${item.nota}",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = Color(0xFFFF9800)
-            )
+            Text("${item.nota}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
             Spacer(Modifier.width(3.dp))
-            Text(
-                "(${item.avaliacoes})",
-                fontSize = 11.sp,
-                color = Color.Gray
-            )
+            Text("(${item.avaliacoes})", fontSize = 11.sp, color = Color.Gray)
             Spacer(Modifier.weight(1f))
             Box(
                 modifier = Modifier
@@ -186,12 +245,7 @@ fun CardProduto(item: Item, onClick: () -> Unit) {
                     .background(BissauGreen),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    Icons.Filled.AddShoppingCart,
-                    contentDescription = "Adicionar",
-                    tint = Color.White,
-                    modifier = Modifier.size(16.dp)
-                )
+                Icon(Icons.Filled.AddShoppingCart, null, tint = Color.White, modifier = Modifier.size(16.dp))
             }
         }
     }

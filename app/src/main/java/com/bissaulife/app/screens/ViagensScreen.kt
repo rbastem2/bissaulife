@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.Negocio
+import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.data.Viagens
 import com.bissaulife.app.theme.BissauGreen
 
@@ -37,10 +39,17 @@ data class CategoriaViagem(val nome: String, val icone: ImageVector, val cor: Co
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViagensScreen(
+    negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
     onVerDetalhes: (Item) -> Unit
 ) {
     var categoriaSelecionada by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        negociosVM.recarregar()
+    }
+
+    val novosNegocios = negociosVM.porCategoria("Viagens")
 
     val listaFiltrada = remember(categoriaSelecionada) {
         if (categoriaSelecionada.isEmpty()) Viagens.lista
@@ -50,9 +59,7 @@ fun ViagensScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Viagens", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                },
+                title = { Text("Viagens", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
@@ -85,6 +92,35 @@ fun ViagensScreen(
                     }
                 )
                 Spacer(Modifier.height(16.dp))
+            }
+
+            // Novos negocios do Firestore
+            if (novosNegocios.isNotEmpty()) {
+                item {
+                    Text(
+                        "🆕 Adicionados recentemente",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = BissauGreen,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
+                items(novosNegocios) { negocio ->
+                    ItemViagemNegocio(negocio)
+                    Spacer(Modifier.height(12.dp))
+                }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        "Sugestoes da nossa equipe",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
             }
 
             item {
@@ -120,6 +156,67 @@ fun ViagensScreen(
 }
 
 @Composable
+fun ItemViagemNegocio(negocio: Negocio) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(12.dp)),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (negocio.imagemUrl.isNotBlank()) {
+            AsyncImage(
+                model = negocio.imagemUrl,
+                contentDescription = negocio.nome,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(BissauGreen.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("✈️", fontSize = 40.sp)
+            }
+        }
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    shape = RoundedCornerShape(6.dp),
+                    color = BissauGreen
+                ) {
+                    Text(
+                        "NOVO",
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        fontSize = 9.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(Modifier.width(6.dp))
+                Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
+            }
+            Spacer(Modifier.height(4.dp))
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Spacer(Modifier.height(4.dp))
+            if (negocio.preco.isNotBlank()) {
+                Text("A partir de ${negocio.preco}", fontSize = 13.sp, color = Color(0xFF666666))
+            }
+            Spacer(Modifier.height(4.dp))
+            Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+        }
+    }
+}
+
+@Composable
 fun BannerViagens() {
     Box(
         modifier = Modifier
@@ -139,10 +236,7 @@ fun BannerViagens() {
                 .fillMaxSize()
                 .background(
                     Brush.horizontalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.7f),
-                            Color.Black.copy(alpha = 0.1f)
-                        )
+                        colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Black.copy(alpha = 0.1f))
                     )
                 )
         )
@@ -152,27 +246,15 @@ fun BannerViagens() {
                 .padding(20.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                "Explore a Guine-Bissau",
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Explore a Guine-Bissau", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(
-                "Ilhas, cultura, natureza e aventura",
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 13.sp
-            )
+            Text("Ilhas, cultura, natureza e aventura", color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp)
         }
     }
 }
 
 @Composable
-fun CategoriasViagemRow(
-    selecionada: String,
-    onSelecionar: (String) -> Unit
-) {
+fun CategoriasViagemRow(selecionada: String, onSelecionar: (String) -> Unit) {
     val categorias = listOf(
         CategoriaViagem("Hoteis", Icons.Filled.Hotel, Color(0xFF2196F3)),
         CategoriaViagem("Casas", Icons.Filled.Home, Color(0xFF4CAF50)),
@@ -198,12 +280,11 @@ fun CategoriasViagemRow(
                         .size(56.dp)
                         .clip(CircleShape)
                         .background(
-                            if (selecionada == cat.nome) cat.cor
-                            else cat.cor.copy(alpha = 0.85f)
+                            if (selecionada == cat.nome) cat.cor else cat.cor.copy(alpha = 0.85f)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(cat.icone, contentDescription = null, tint = Color.White, modifier = Modifier.size(28.dp))
+                    Icon(cat.icone, null, tint = Color.White, modifier = Modifier.size(28.dp))
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
@@ -239,47 +320,19 @@ fun ItemViagem(item: Item, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                item.nome,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
+            Text(item.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
             Spacer(Modifier.height(4.dp))
-            Text(
-                "A partir de ${item.preco}",
-                fontSize = 13.sp,
-                color = Color(0xFF666666)
-            )
+            Text("A partir de ${item.preco}", fontSize = 13.sp, color = Color(0xFF666666))
             Spacer(Modifier.height(6.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(14.dp)
-                )
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(14.dp))
                 Spacer(Modifier.width(3.dp))
-                Text(
-                    "${item.nota}",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFFFF9800)
-                )
+                Text("${item.nota}", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
                 Spacer(Modifier.width(3.dp))
-                Text(
-                    "(${item.avaliacoes})",
-                    fontSize = 11.sp,
-                    color = Color.Gray
-                )
+                Text("(${item.avaliacoes})", fontSize = 11.sp, color = Color.Gray)
             }
         }
 
-        Icon(
-            Icons.Filled.ArrowForwardIos,
-            contentDescription = null,
-            tint = Color.Gray,
-            modifier = Modifier.size(16.dp)
-        )
+        Icon(Icons.Filled.ArrowForwardIos, null, tint = Color.Gray, modifier = Modifier.size(16.dp))
     }
 }

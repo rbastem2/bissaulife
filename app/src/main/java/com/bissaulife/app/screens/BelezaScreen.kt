@@ -25,17 +25,26 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bissaulife.app.data.Beleza
 import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.Negocio
+import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.theme.BissauGreen
 import com.bissaulife.app.theme.BissauPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BelezaScreen(
+    negociosVM: NegociosViewModel,
     onVoltar: () -> Unit,
     onVerDetalhes: (Item) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
     val filtros = listOf("Todos", "Cabelo", "Unhas", "Maquiagem", "Spa", "Estetica")
+
+    LaunchedEffect(Unit) {
+        negociosVM.recarregar()
+    }
+
+    val novosNegocios = negociosVM.porCategoria("Beleza")
 
     val listaFiltrada = remember(filtroSelecionado) {
         when (filtroSelecionado) {
@@ -52,9 +61,7 @@ fun BelezaScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text("Beleza", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                },
+                title = { Text("Beleza", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
                 navigationIcon = {
                     IconButton(onClick = onVoltar) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
@@ -108,10 +115,95 @@ fun BelezaScreen(
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                if (novosNegocios.isNotEmpty()) {
+                    item {
+                        Text(
+                            "🆕 Adicionados recentemente",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = BissauPink,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                    }
+                    items(novosNegocios) { negocio ->
+                        CardNegocioBeleza(negocio)
+                    }
+                    item {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "Sugestoes da nossa equipe",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                    }
+                }
+
                 items(listaFiltrada) { item ->
                     CardBeleza(item = item, onClick = { onVerDetalhes(item) })
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun CardNegocioBeleza(negocio: Negocio) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Top
+    ) {
+        if (negocio.imagemUrl.isNotBlank()) {
+            AsyncImage(
+                model = negocio.imagemUrl,
+                contentDescription = negocio.nome,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(BissauPink.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("💆", fontSize = 40.sp)
+            }
+        }
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Surface(
+                    shape = RoundedCornerShape(6.dp),
+                    color = BissauPink
+                ) {
+                    Text(
+                        "NOVO",
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        fontSize = 9.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(Modifier.width(6.dp))
+                Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
+            }
+            Spacer(Modifier.height(4.dp))
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Spacer(Modifier.height(4.dp))
+            Text(negocio.descricao, fontSize = 12.sp, color = Color(0xFF666666), maxLines = 2)
+            Spacer(Modifier.height(6.dp))
+            if (negocio.preco.isNotBlank()) {
+                Text("A partir de ${negocio.preco}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = BissauPink)
+            }
+            Spacer(Modifier.height(4.dp))
+            Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
         }
     }
 }
@@ -136,10 +228,7 @@ fun BannerBeleza() {
                 .fillMaxSize()
                 .background(
                     Brush.horizontalGradient(
-                        colors = listOf(
-                            BissauPink.copy(alpha = 0.8f),
-                            Color.Transparent
-                        )
+                        colors = listOf(BissauPink.copy(alpha = 0.8f), Color.Transparent)
                     )
                 )
         )
@@ -149,18 +238,9 @@ fun BannerBeleza() {
                 .padding(20.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                "Cuide-se bem",
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            )
+            Text("Cuide-se bem", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text(
-                "Saloes, spa, unhas e muito mais",
-                color = Color.White.copy(alpha = 0.95f),
-                fontSize = 13.sp
-            )
+            Text("Saloes, spa, unhas e muito mais", color = Color.White.copy(alpha = 0.95f), fontSize = 13.sp)
         }
     }
 }
@@ -185,55 +265,20 @@ fun CardBeleza(item: Item, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                item.nome,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                color = Color.Black
-            )
+            Text(item.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black)
             Spacer(Modifier.height(4.dp))
-
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Filled.Star,
-                    contentDescription = null,
-                    tint = Color(0xFFFFC107),
-                    modifier = Modifier.size(16.dp)
-                )
+                Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(4.dp))
-                Text(
-                    "${item.nota}",
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 13.sp,
-                    color = Color(0xFFFF9800)
-                )
+                Text("${item.nota}", fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = Color(0xFFFF9800))
                 Spacer(Modifier.width(4.dp))
-                Text(
-                    "(${item.avaliacoes})",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+                Text("(${item.avaliacoes})", fontSize = 12.sp, color = Color.Gray)
             }
-
             Spacer(Modifier.height(4.dp))
-
-            Text(
-                item.categoria,
-                fontSize = 12.sp,
-                color = Color.Gray
-            )
-
+            Text(item.categoria, fontSize = 12.sp, color = Color.Gray)
             Spacer(Modifier.height(4.dp))
-
-            Text(
-                "A partir de ${item.preco}",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = BissauPink
-            )
-
+            Text("A partir de ${item.preco}", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = BissauPink)
             Spacer(Modifier.height(8.dp))
-
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = BissauPink),

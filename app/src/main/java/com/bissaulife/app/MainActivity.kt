@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.bissaulife.app.data.Beleza
 import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Moda
+import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
 import com.bissaulife.app.screens.AdminScreen
@@ -39,6 +40,7 @@ class MainActivity : ComponentActivity() {
                 var showSplash by remember { mutableStateOf(true) }
                 val navController = rememberNavController()
                 val favoritosVM: FavoritosViewModel = viewModel()
+                val negociosVM: NegociosViewModel = viewModel()
                 var versaoRecomposicao by remember { mutableIntStateOf(0) }
 
                 LaunchedEffect(Unit) {
@@ -88,6 +90,7 @@ class MainActivity : ComponentActivity() {
 
                         composable("gastronomia") {
                             GastronomiaScreen(
+                                negociosVM = negociosVM,
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { restaurante ->
                                     navController.navigate("detalhe_restaurante/${restaurante.id}")
@@ -108,6 +111,7 @@ class MainActivity : ComponentActivity() {
 
                         composable("moda") {
                             ModaScreen(
+                                negociosVM = negociosVM,
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
                                     navController.navigate("detalhe_item_moda/${item.id}")
@@ -128,6 +132,7 @@ class MainActivity : ComponentActivity() {
 
                         composable("viagens") {
                             ViagensScreen(
+                                negociosVM = negociosVM,
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
                                     navController.navigate("detalhe_item_viagem/${item.id}")
@@ -148,6 +153,7 @@ class MainActivity : ComponentActivity() {
 
                         composable("beleza") {
                             BelezaScreen(
+                                negociosVM = negociosVM,
                                 onVoltar = { navController.popBackStack() },
                                 onVerDetalhes = { item ->
                                     navController.navigate("detalhe_item_beleza/${item.id}")
