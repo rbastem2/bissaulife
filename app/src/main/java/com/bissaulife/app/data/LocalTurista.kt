@@ -28,38 +28,164 @@ object LocaisTurista {
 
     val lista = listOf(
 
-        // ============ HOSPITAIS ============
+        // ============ HOSPITAIS E CLINICAS (DADOS REAIS) ============
         LocalTurista(
             id = 1,
             nome = "Hospital Nacional Simao Mendes",
             categoria = "Hospitais",
-            telefone = "+245 966 000 000",
-            endereco = "Av. Combatentes da Liberdade, Bissau",
-            descricao = "Principal hospital publico da Guine-Bissau. Atendimento de urgencia 24 horas. Recomendado para emergencias graves.",
-            horario = "24 horas"
+            telefone = "+245955348876",
+            endereco = "Avenida Francisco Mendes, Bissau",
+            descricao = "Principal hospital publico da Guine-Bissau. Referencia nacional em atendimento de urgencia, cirurgias e internamento.",
+            horario = "Aberto 24 horas"
         ),
         LocalTurista(
             id = 2,
-            nome = "Hospital Militar Principal",
+            nome = "Hospital Militar",
             categoria = "Hospitais",
-            telefone = "+245 966 000 001",
-            endereco = "Bairro de Santa Luzia, Bissau",
-            descricao = "Hospital militar com atendimento de urgencia. Aceita civis em casos de emergencia.",
-            horario = "24 horas"
+            telefone = "",
+            endereco = "Avenida dos Combatentes da Liberdade da Patria, Bissau",
+            descricao = "Hospital militar com atendimento de urgencia. Aceita civis em casos de emergencia. Estrutura ampla e organizada.",
+            horario = "Aberto 24 horas"
         ),
         LocalTurista(
             id = 3,
-            nome = "Clinica Bissau",
+            nome = "Hospital 3 de Agosto",
             categoria = "Hospitais",
-            telefone = "+245 966 000 002",
-            endereco = "Bairro do Centro, Bissau",
-            descricao = "Clinica privada com atendimento geral, exames e pequenas cirurgias.",
-            horario = "Seg-Sab 8h as 20h"
+            telefone = "+245957482277",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Hospital publico com atendimento geral e urgencia. Ponto de referencia para moradores da regiao.",
+            horario = "Seg-Dom horario comercial"
+        ),
+        LocalTurista(
+            id = 4,
+            nome = "Hospital Pediatrico de Bor",
+            categoria = "Hospitais",
+            telefone = "+245966528890",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Hospital pediatrico especializado no atendimento a criancas. Referencia em pediatria na Guine-Bissau.",
+            horario = "Aberto 24 horas"
+        ),
+        LocalTurista(
+            id = 5,
+            nome = "Clinica Madrugada",
+            categoria = "Hospitais",
+            telefone = "+245955120537",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Clinica com atendimento 24 horas. Uma das mais bem avaliadas da cidade. Equipe medica experiente.",
+            horario = "Aberto 24 horas"
+        ),
+        LocalTurista(
+            id = 6,
+            nome = "Clinica Sao Jose de Bor",
+            categoria = "Hospitais",
+            telefone = "+245955561538",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Clinica e hospital particular com atendimento geral. Boa infraestrutura e equipe atenciosa.",
+            horario = "Seg-Dom horario comercial"
+        ),
+        LocalTurista(
+            id = 7,
+            nome = "Clinica Geral Dra Vicky Cabral",
+            categoria = "Hospitais",
+            telefone = "+245957185726",
+            endereco = "Estrada de Bor, perto da rotunda de Clele, Bissau",
+            descricao = "Clinica geral com servico 24 horas, 7 dias por semana. Equipe medica capacitada.",
+            horario = "Aberto 24 horas"
+        ),
+        LocalTurista(
+            id = 8,
+            nome = "Raoul Follereau",
+            categoria = "Hospitais",
+            telefone = "+245957181823",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Centro de saude com atendimento geral. Estrutura tradicional com boa reputacao na comunidade.",
+            horario = "Seg-Sab horario comercial"
+        ),
+        LocalTurista(
+            id = 9,
+            nome = "CEMI-E Clinica Medica e Dentaria",
+            categoria = "Hospitais",
+            telefone = "+245957203440",
+            endereco = "1160, Rua Djassi, Bissau",
+            descricao = "Clinica medica e dentaria especializada. Consultas, exames e tratamentos odontologicos.",
+            horario = "Seg-Sab 9h as 18h"
+        ),
+        LocalTurista(
+            id = 10,
+            nome = "Renato Grande Bissau",
+            categoria = "Hospitais",
+            telefone = "",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Clinica especializada com atendimento medico diversificado. Profissionais qualificados.",
+            horario = "Seg-Sab horario comercial"
+        ),
+        LocalTurista(
+            id = 11,
+            nome = "Centro de Saude de Bandim",
+            categoria = "Hospitais",
+            telefone = "+245957626075",
+            endereco = "Bairro de Bandim, Bissau",
+            descricao = "Posto de saude comunitario no coracao de Bandim. Atendimento primario e vacinacao.",
+            horario = "Seg-Sab horario comercial"
+        ),
+        LocalTurista(
+            id = 12,
+            nome = "Centro de Saude do Bairro Militar",
+            categoria = "Hospitais",
+            telefone = "+245955731523",
+            endereco = "Bairro Militar, em frente ao Mercado, Bissau",
+            descricao = "Centro de saude tipo B com atendimento 24 horas. Posto de vacinacao disponivel.",
+            horario = "Aberto 24 horas"
+        ),
+        LocalTurista(
+            id = 13,
+            nome = "Centro de Saude de Bairro de Ajuda",
+            categoria = "Hospitais",
+            telefone = "",
+            endereco = "Bairro de Ajuda, Bissau",
+            descricao = "Posto de saude comunitario com atendimento 24 horas. Referencia no bairro.",
+            horario = "Aberto 24 horas"
+        ),
+        LocalTurista(
+            id = 14,
+            nome = "Centro de Saude de Antula",
+            categoria = "Hospitais",
+            telefone = "",
+            endereco = "Bairro de Antula, Bissau",
+            descricao = "Posto de saude comunitario com atendimento primario. Proximo a comunidade de Antula.",
+            horario = "Seg-Sab horario comercial"
+        ),
+        LocalTurista(
+            id = 15,
+            nome = "Centro Materno Infantil",
+            categoria = "Hospitais",
+            telefone = "",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Centro medico especializado em saude materna e infantil. Acompanhamento de gestantes e criancas.",
+            horario = "Seg-Sab 8h as 17h"
+        ),
+        LocalTurista(
+            id = 16,
+            nome = "Centro de Saude Mental Osvaldo Maximo Vieira",
+            categoria = "Hospitais",
+            telefone = "",
+            endereco = "Faculdade de Medicina Raul Diaz Arguelles, Bissau",
+            descricao = "Servico especializado em saude mental. Apoio psicologico e psiquiatrico.",
+            horario = "Seg-Sex 8h as 15h"
+        ),
+        LocalTurista(
+            id = 17,
+            nome = "Centro de Reducao Motora Dr. Ernesto Lopes",
+            categoria = "Hospitais",
+            telefone = "+245966096557",
+            endereco = "Bissau, Guine-Bissau",
+            descricao = "Centro especializado em fisioterapia e reabilitacao motora. Atendimento para recuperacao de movimentos.",
+            horario = "Seg-Sex horario comercial"
         ),
 
         // ============ EMBAIXADAS ============
         LocalTurista(
-            id = 4,
+            id = 18,
             nome = "Embaixada de Portugal",
             categoria = "Embaixadas",
             telefone = "+245 966 100 001",
@@ -68,7 +194,7 @@ object LocaisTurista {
             horario = "Seg-Sex 9h as 16h"
         ),
         LocalTurista(
-            id = 5,
+            id = 19,
             nome = "Embaixada do Brasil",
             categoria = "Embaixadas",
             telefone = "+245 966 100 002",
@@ -77,7 +203,7 @@ object LocaisTurista {
             horario = "Seg-Sex 9h as 17h"
         ),
         LocalTurista(
-            id = 6,
+            id = 20,
             nome = "Embaixada da Franca",
             categoria = "Embaixadas",
             telefone = "+245 966 100 003",
@@ -88,7 +214,7 @@ object LocaisTurista {
 
         // ============ MINISTERIOS ============
         LocalTurista(
-            id = 7,
+            id = 21,
             nome = "Ministerio dos Negocios Estrangeiros",
             categoria = "Ministerios",
             telefone = "+245 966 200 001",
@@ -97,7 +223,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 15h"
         ),
         LocalTurista(
-            id = 8,
+            id = 22,
             nome = "Ministerio da Saude",
             categoria = "Ministerios",
             telefone = "+245 966 200 002",
@@ -108,7 +234,7 @@ object LocaisTurista {
 
         // ============ FUTEBOL ============
         LocalTurista(
-            id = 9,
+            id = 23,
             nome = "Estadio Nacional 24 de Setembro",
             categoria = "Futebol",
             telefone = "",
@@ -117,7 +243,7 @@ object LocaisTurista {
             horario = "Dias de jogo"
         ),
         LocalTurista(
-            id = 10,
+            id = 24,
             nome = "Estadio Lino Correia",
             categoria = "Futebol",
             telefone = "",
@@ -128,7 +254,7 @@ object LocaisTurista {
 
         // ============ FARMACIAS ============
         LocalTurista(
-            id = 11,
+            id = 25,
             nome = "Farmacia Central",
             categoria = "Farmacias",
             telefone = "+245 966 300 001",
@@ -137,7 +263,7 @@ object LocaisTurista {
             horario = "Seg-Sab 8h as 20h"
         ),
         LocalTurista(
-            id = 12,
+            id = 26,
             nome = "Farmacia Popular",
             categoria = "Farmacias",
             telefone = "+245 966 300 002",
@@ -148,7 +274,7 @@ object LocaisTurista {
 
         // ============ DISCOTECAS ============
         LocalTurista(
-            id = 13,
+            id = 27,
             nome = "Discoteca N'Kassa",
             categoria = "Discotecas",
             telefone = "+245 966 400 001",
@@ -159,7 +285,7 @@ object LocaisTurista {
 
         // ============ SUPERMERCADOS ============
         LocalTurista(
-            id = 14,
+            id = 28,
             nome = "Supermercado Central",
             categoria = "Supermercados",
             telefone = "+245 966 500 001",
@@ -168,7 +294,7 @@ object LocaisTurista {
             horario = "Seg-Sab 8h as 21h"
         ),
         LocalTurista(
-            id = 15,
+            id = 29,
             nome = "Supermercado Nossa Senhora",
             categoria = "Supermercados",
             telefone = "+245 966 500 002",
@@ -179,7 +305,7 @@ object LocaisTurista {
 
         // ============ FEIRAS ============
         LocalTurista(
-            id = 16,
+            id = 30,
             nome = "Mercado de Bandim",
             categoria = "Feiras",
             telefone = "",
@@ -188,7 +314,7 @@ object LocaisTurista {
             horario = "Seg-Sab 7h as 19h"
         ),
         LocalTurista(
-            id = 17,
+            id = 31,
             nome = "Mercado de Bissau Novo",
             categoria = "Feiras",
             telefone = "",
@@ -199,7 +325,7 @@ object LocaisTurista {
 
         // ============ COMBUSTIVEL ============
         LocalTurista(
-            id = 18,
+            id = 32,
             nome = "Posto Total",
             categoria = "Combustivel",
             telefone = "+245 966 600 001",
@@ -208,7 +334,7 @@ object LocaisTurista {
             horario = "24 horas"
         ),
         LocalTurista(
-            id = 19,
+            id = 33,
             nome = "Posto Petromar",
             categoria = "Combustivel",
             telefone = "+245 966 600 002",
@@ -219,7 +345,7 @@ object LocaisTurista {
 
         // ============ BANCOS E CAMBIO ============
         LocalTurista(
-            id = 20,
+            id = 34,
             nome = "BCEAO - Banco Central",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 001",
@@ -228,7 +354,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 15h"
         ),
         LocalTurista(
-            id = 21,
+            id = 35,
             nome = "BAO - Banco da Africa Ocidental",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 002",
@@ -237,7 +363,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 16h"
         ),
         LocalTurista(
-            id = 22,
+            id = 36,
             nome = "BIGB - Banco Internacional",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 003",
@@ -246,7 +372,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 16h"
         ),
         LocalTurista(
-            id = 23,
+            id = 37,
             nome = "Orabank Guine-Bissau",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 004",
@@ -255,7 +381,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 16h"
         ),
         LocalTurista(
-            id = 24,
+            id = 38,
             nome = "Ecobank Guine-Bissau",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 005",
@@ -264,7 +390,7 @@ object LocaisTurista {
             horario = "Seg-Sex 8h as 16h"
         ),
         LocalTurista(
-            id = 25,
+            id = 39,
             nome = "Casa de Cambio Central",
             categoria = "Bancos e Cambio",
             telefone = "+245 966 700 006",
