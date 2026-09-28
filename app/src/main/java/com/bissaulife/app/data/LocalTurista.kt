@@ -22,7 +22,8 @@ object LocaisTurista {
         "Discotecas",
         "Supermercados",
         "Feiras",
-        "Combustivel"
+        "Combustivel",
+        "Bancos e Cambio"
     )
 
     val lista = listOf(
@@ -214,6 +215,62 @@ object LocaisTurista {
             endereco = "Estrada de Bissau-Bissau, Bissau",
             descricao = "Posto de combustivel com gasolina e gasoleo. Bom para abastecer antes de viagens.",
             horario = "Seg-Dom 6h as 22h"
+        ),
+
+        // ============ BANCOS E CAMBIO ============
+        LocalTurista(
+            id = 20,
+            nome = "BCEAO - Banco Central",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 001",
+            endereco = "Av. Amilcar Cabral, Bissau",
+            descricao = "Banco Central dos Estados da Africa Ocidental. Referencia para cambio oficial.",
+            horario = "Seg-Sex 8h as 15h"
+        ),
+        LocalTurista(
+            id = 21,
+            nome = "BAO - Banco da Africa Ocidental",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 002",
+            endereco = "Av. Amilcar Cabral, Bissau",
+            descricao = "Um dos maiores bancos comerciais da Guine-Bissau. Caixas multibanco e cambio.",
+            horario = "Seg-Sex 8h as 16h"
+        ),
+        LocalTurista(
+            id = 22,
+            nome = "BIGB - Banco Internacional",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 003",
+            endereco = "Bairro do Centro, Bissau",
+            descricao = "Banco Internacional da Guine-Bissau. Servicos de cambio e transferencias.",
+            horario = "Seg-Sex 8h as 16h"
+        ),
+        LocalTurista(
+            id = 23,
+            nome = "Orabank Guine-Bissau",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 004",
+            endereco = "Av. Cidade de Lisboa, Bissau",
+            descricao = "Banco comercial com servicos de cambio e transferencias internacionais.",
+            horario = "Seg-Sex 8h as 16h"
+        ),
+        LocalTurista(
+            id = 24,
+            nome = "Ecobank Guine-Bissau",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 005",
+            endereco = "Bairro de Santa Luzia, Bissau",
+            descricao = "Banco pan-africano com servicos de cambio e multicaixa.",
+            horario = "Seg-Sex 8h as 16h"
+        ),
+        LocalTurista(
+            id = 25,
+            nome = "Casa de Cambio Central",
+            categoria = "Bancos e Cambio",
+            telefone = "+245 966 700 006",
+            endereco = "Praca Che Guevara, Bissau",
+            descricao = "Casa de cambio com melhores taxas. Aceita euros, dolares e FCFA.",
+            horario = "Seg-Sab 8h as 18h"
         )
     )
 

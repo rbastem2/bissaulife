@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.bissaulife.app.data.LocaisTurista
 import com.bissaulife.app.theme.BissauGreen
 
 data class CategoriaTurista(
@@ -43,7 +42,8 @@ fun GuiaTuristaScreen(
         CategoriaTurista("Discotecas", "🎉", Color(0xFF8E24AA)),
         CategoriaTurista("Supermercados", "🛒", Color(0xFFFB8C00)),
         CategoriaTurista("Feiras", "🛍️", Color(0xFFD81B60)),
-        CategoriaTurista("Combustivel", "⛽", Color(0xFF546E7A))
+        CategoriaTurista("Combustivel", "⛽", Color(0xFF546E7A)),
+        CategoriaTurista("Bancos e Cambio", "🏦", Color(0xFF00897B))
     )
 
     Scaffold(
@@ -71,7 +71,6 @@ fun GuiaTuristaScreen(
                 .padding(padding)
                 .background(Color(0xFFF5F5F5))
         ) {
-            // Banner de boas vindas
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
