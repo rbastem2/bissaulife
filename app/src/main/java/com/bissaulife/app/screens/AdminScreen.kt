@@ -34,8 +34,7 @@ fun AdminScreen(onVoltar: () -> Unit) {
     val repo = remember { NegocioRepository() }
 
     var abaAtual by remember { mutableIntStateOf(0) }
-    var pendentes by remember { mutableStateOf<List<Negocio>>(emptyList()) }
-    var aprovados by remember { mutableStateOf<List<Negocio>>(emptyList()) }
+    var todos by remember { mutableStateOf<List<Negocio>>(emptyList()) }
     var carregando by remember { mutableStateOf(true) }
     var erro by remember { mutableStateOf("") }
     var versao by remember { mutableIntStateOf(0) }
@@ -43,14 +42,17 @@ fun AdminScreen(onVoltar: () -> Unit) {
     LaunchedEffect(versao) {
         carregando = true
         erro = ""
-        val r1 = repo.listarPendentes()
-        val r2 = repo.listarAprovados()
-        if (r1.isSuccess) pendentes = r1.getOrDefault(emptyList())
-        else erro = "Erro ao carregar pendentes"
-
-        if (r2.isSuccess) aprovados = r2.getOrDefault(emptyList())
+        val r = repo.listarTodos()
+        if (r.isSuccess) {
+            todos = r.getOrDefault(emptyList())
+        } else {
+            erro = "Erro ao carregar: ${r.exceptionOrNull()?.message ?: "verifique conexao"}"
+        }
         carregando = false
     }
+
+    val pendentes = todos.filter { it.status == "pendente" }
+    val aprovados = todos.filter { it.status == "aprovado" }
 
     fun aprovar(id: String) {
         scope.launch {
@@ -77,10 +79,16 @@ fun AdminScreen(onVoltar: () -> Unit) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
                     }
                 },
+                actions = {
+                    IconButton(onClick = { versao++ }) {
+                        Text("🔄", fontSize = 18.sp)
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color(0xFF003366),
                     titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
                 )
             )
         }
@@ -124,7 +132,11 @@ fun AdminScreen(onVoltar: () -> Unit) {
                     modifier = Modifier.fillMaxSize().padding(30.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(erro, color = Color.Red, textAlign = TextAlign.Center)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("⚠️", fontSize = 40.sp)
+                        Spacer(Modifier.height(12.dp))
+                        Text(erro, color = Color.Red, textAlign = TextAlign.Center, fontSize = 13.sp)
+                    }
                 }
             } else {
                 val lista = if (abaAtual == 0) pendentes else aprovados
@@ -196,7 +208,7 @@ fun CardAdmin(
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        negocio.nome,
+                        negocio.nome.ifBlank { "(sem nome)" },
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
