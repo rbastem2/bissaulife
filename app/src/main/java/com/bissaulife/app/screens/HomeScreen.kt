@@ -45,6 +45,7 @@ fun HomeScreen(
     onAbrirLogin: () -> Unit,
     onAbrirCadastroNegocio: () -> Unit,
     onAbrirAdmin: () -> Unit,
+    onAbrirGuiaTurista: () -> Unit,
     onLogout: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
@@ -113,7 +114,8 @@ fun HomeScreen(
             when (abaAtual) {
                 0 -> ConteudoInicio(
                     onAbrirCategoria = onAbrirCategoria,
-                    onAbrirBusca = { abaAtual = 1 }
+                    onAbrirBusca = { abaAtual = 1 },
+                    onAbrirGuiaTurista = onAbrirGuiaTurista
                 )
                 1 -> ExplorarScreen(
                     onAbrirRestaurante = onAbrirRestaurante,
@@ -148,7 +150,8 @@ fun HomeScreen(
 @Composable
 fun ConteudoInicio(
     onAbrirCategoria: (String) -> Unit,
-    onAbrirBusca: () -> Unit
+    onAbrirBusca: () -> Unit,
+    onAbrirGuiaTurista: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -159,6 +162,8 @@ fun ConteudoInicio(
         Cabecalho()
         Spacer(Modifier.height(16.dp))
         CategoriasGrid(onCategoriaClick = onAbrirCategoria)
+        Spacer(Modifier.height(16.dp))
+        BannerGuiaTurista(onClick = onAbrirGuiaTurista)
         Spacer(Modifier.height(16.dp))
         BarraBusca(onClick = onAbrirBusca)
         Spacer(Modifier.height(16.dp))
@@ -254,6 +259,57 @@ fun CategoriasGrid(onCategoriaClick: (String) -> Unit) {
                     fontWeight = FontWeight.SemiBold
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun BannerGuiaTurista(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                Brush.horizontalGradient(
+                    colors = listOf(Color(0xFF003366), Color(0xFF00A86B))
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(20.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("🌍", fontSize = 32.sp)
+            }
+            Spacer(Modifier.width(14.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Guia do Turista",
+                    color = Color.White,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Hospitais, embaixadas, farmacias e mais",
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp
+                )
+            }
+            Icon(
+                Icons.Filled.ArrowForwardIos,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(18.dp)
+            )
         }
     }
 }

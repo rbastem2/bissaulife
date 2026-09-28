@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.bissaulife.app.data.Beleza
 import com.bissaulife.app.data.FavoritosViewModel
+import com.bissaulife.app.data.LocaisTurista
 import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.data.Restaurantes
@@ -22,9 +22,12 @@ import com.bissaulife.app.screens.DefinicoesScreen
 import com.bissaulife.app.screens.DetalheItemScreen
 import com.bissaulife.app.screens.DetalheNegocioScreen
 import com.bissaulife.app.screens.DetalheScreen
+import com.bissaulife.app.screens.DetalheTuristaScreen
 import com.bissaulife.app.screens.GastronomiaScreen
+import com.bissaulife.app.screens.GuiaTuristaScreen
 import com.bissaulife.app.screens.HomeScreen
 import com.bissaulife.app.screens.IdiomasScreen
+import com.bissaulife.app.screens.ListaTuristaScreen
 import com.bissaulife.app.screens.LoginScreen
 import com.bissaulife.app.screens.ModaScreen
 import com.bissaulife.app.screens.PlanosScreen
@@ -91,6 +94,7 @@ class MainActivity : ComponentActivity() {
                                 onAbrirLogin = { navController.navigate("login") },
                                 onAbrirCadastroNegocio = { navController.navigate("cadastro_negocio") },
                                 onAbrirAdmin = { navController.navigate("admin") },
+                                onAbrirGuiaTurista = { navController.navigate("guia_turista") },
                                 onLogout = { versaoRecomposicao++ }
                             )
                         }
@@ -147,7 +151,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // Tela de detalhes do negocio do Firestore
                         composable("detalhe_negocio/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id") ?: ""
                             val negocio = negociosVM.aprovados.find { it.id == id }
@@ -166,7 +169,6 @@ class MainActivity : ComponentActivity() {
                                     onVoltar = { navController.popBackStack() }
                                 )
                             } else {
-                                // Se nao encontrou (ex: negocio foi removido), volta
                                 LaunchedEffect(Unit) {
                                     navController.popBackStack()
                                 }
@@ -217,6 +219,43 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        // ===== GUIA DO TURISTA =====
+                        composable("guia_turista") {
+                            GuiaTuristaScreen(
+                                onVoltar = { navController.popBackStack() },
+                                onAbrirCategoria = { categoria ->
+                                    navController.navigate("lista_turista/$categoria")
+                                }
+                            )
+                        }
+
+                        composable("lista_turista/{categoria}") { backStackEntry ->
+                            val categoria = backStackEntry.arguments?.getString("categoria") ?: ""
+                            ListaTuristaScreen(
+                                categoria = categoria,
+                                onVoltar = { navController.popBackStack() },
+                                onVerDetalhes = { local ->
+                                    navController.navigate("detalhe_turista/${local.id}")
+                                }
+                            )
+                        }
+
+                        composable("detalhe_turista/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val local = LocaisTurista.lista.find { it.id == id }
+                            if (local != null) {
+                                DetalheTuristaScreen(
+                                    local = local,
+                                    onVoltar = { navController.popBackStack() }
+                                )
+                            } else {
+                                LaunchedEffect(Unit) {
+                                    navController.popBackStack()
+                                }
+                            }
+                        }
+
+                        // ===== OUTRAS TELAS =====
                         composable("planos") {
                             PlanosScreen(onVoltar = { navController.popBackStack() })
                         }
