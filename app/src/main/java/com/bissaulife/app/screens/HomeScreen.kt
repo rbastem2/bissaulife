@@ -114,7 +114,6 @@ fun HomeScreen(
             when (abaAtual) {
                 0 -> ConteudoInicio(
                     onAbrirCategoria = onAbrirCategoria,
-                    onAbrirBusca = { abaAtual = 1 },
                     onAbrirGuiaTurista = onAbrirGuiaTurista
                 )
                 1 -> ExplorarScreen(
@@ -150,7 +149,6 @@ fun HomeScreen(
 @Composable
 fun ConteudoInicio(
     onAbrirCategoria: (String) -> Unit,
-    onAbrirBusca: () -> Unit,
     onAbrirGuiaTurista: () -> Unit
 ) {
     Column(
@@ -164,8 +162,6 @@ fun ConteudoInicio(
         CategoriasGrid(onCategoriaClick = onAbrirCategoria)
         Spacer(Modifier.height(16.dp))
         BannerGuiaTurista(onClick = onAbrirGuiaTurista)
-        Spacer(Modifier.height(16.dp))
-        BarraBusca(onClick = onAbrirBusca)
         Spacer(Modifier.height(16.dp))
         BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
         Spacer(Modifier.height(24.dp))
@@ -309,34 +305,6 @@ fun BannerGuiaTurista(onClick: () -> Unit) {
                 contentDescription = null,
                 tint = Color.White,
                 modifier = Modifier.size(18.dp)
-            )
-        }
-    }
-}
-
-@Composable
-fun BarraBusca(onClick: () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(28.dp),
-        color = Color.White,
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFDDDDDD)),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(Icons.Filled.Search, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.width(12.dp))
-            Text(
-                "Pesquisar servicos, produtos, lugares...",
-                fontSize = 13.sp,
-                color = Color.Gray
             )
         }
     }

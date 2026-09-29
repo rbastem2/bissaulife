@@ -4,9 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bissaulife.app.R
-import com.bissaulife.app.theme.BissauGreen
 
 @Composable
 fun SplashScreen() {
@@ -73,28 +70,21 @@ fun SplashScreen() {
 
             Spacer(Modifier.weight(1f))
 
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
-                shape = RoundedCornerShape(28.dp)
-            ) {
-                Text("Comecar", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-            }
+            CircularProgressIndicator(
+                color = Color.White,
+                strokeWidth = 4.dp,
+                modifier = Modifier.size(48.dp)
+            )
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(16.dp))
 
-            OutlinedButton(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(28.dp)
-            ) {
-                Text("Entrar", fontSize = 17.sp, color = Color.White, fontWeight = FontWeight.SemiBold)
-            }
+            Text(
+                text = "A processar...",
+                color = Color.White.copy(alpha = 0.8f),
+                fontSize = 13.sp
+            )
+
+            Spacer(Modifier.height(60.dp))
         }
     }
 }
