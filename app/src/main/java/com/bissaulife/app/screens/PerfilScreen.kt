@@ -2,6 +2,7 @@ package com.bissaulife.app.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,10 +20,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bissaulife.app.R
 import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
@@ -122,7 +126,7 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        // Botao Entrar (só se NÃO logado)
+        // Botao Entrar (se NAO logado)
         if (!estaLogado) {
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -159,7 +163,7 @@ fun PerfilScreen(
             Spacer(Modifier.height(16.dp))
         }
 
-        // Card Painel Admin (só aparece para o admin)
+        // Card Painel Admin (so admin)
         if (ehAdmin) {
             Card(
                 shape = RoundedCornerShape(16.dp),
@@ -301,23 +305,49 @@ fun PerfilScreen(
 
         Spacer(Modifier.height(16.dp))
 
+        // Banner com imagem
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .height(120.dp)
+                .height(160.dp)
                 .clip(RoundedCornerShape(20.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(Color(0xFF003366), Color(0xFF00A86B))
-                    )
-                )
-                .padding(20.dp),
-            contentAlignment = Alignment.CenterStart
         ) {
-            Column {
-                Text("Juntos fazemos", color = Color.White, fontSize = 14.sp)
-                Text("Bissau crescer!", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Image(
+                painter = painterResource(id = R.drawable.banner_perfil),
+                contentDescription = "Juntos fazemos Bissau crescer",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color.Black.copy(alpha = 0.65f),
+                                Color.Black.copy(alpha = 0.15f)
+                            )
+                        )
+                    )
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    "Juntos fazemos",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+                Text(
+                    "Bissau crescer!",
+                    color = Color.White,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                )
                 Spacer(Modifier.height(6.dp))
                 Text("💚❤️💛", fontSize = 18.sp)
             }

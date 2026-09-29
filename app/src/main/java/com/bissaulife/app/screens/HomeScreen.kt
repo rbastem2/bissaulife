@@ -173,13 +173,32 @@ fun Cabecalho() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(BissauDarkBlue, Color(0xFF00509E))
-                )
-            )
+            .height(220.dp)
     ) {
+        // Imagem de fundo
+        Image(
+            painter = painterResource(id = R.drawable.home_bg),
+            contentDescription = "Bissau",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Overlay escuro para dar contraste
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.55f),
+                            Color.Black.copy(alpha = 0.35f),
+                            Color.Black.copy(alpha = 0.75f)
+                        )
+                    )
+                )
+        )
+
+        // Conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -205,7 +224,7 @@ fun Cabecalho() {
                     )
                     Text(
                         "Descubra. Escolha. Compre. Viva.",
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = Color.White.copy(alpha = 0.9f),
                         fontSize = 12.sp
                     )
                 }
@@ -213,9 +232,10 @@ fun Cabecalho() {
             Spacer(Modifier.height(16.dp))
             Text(
                 "O seu guia e marketplace da Guine-Bissau.",
-                color = Color.White.copy(alpha = 0.9f),
-                fontSize = 12.sp,
-                lineHeight = 16.sp
+                color = Color.White.copy(alpha = 0.95f),
+                fontSize = 13.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 17.sp
             )
         }
     }
@@ -316,14 +336,32 @@ fun BannerDestaque(onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .height(180.dp)
+            .height(190.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(
-                Brush.horizontalGradient(
-                    colors = listOf(Color(0xFF003366), Color(0xFF00A86B))
-                )
-            )
     ) {
+        // Imagem de fundo
+        Image(
+            painter = painterResource(id = R.drawable.banner_sabores),
+            contentDescription = "Sabores da nossa terra",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Overlay escuro para contraste
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.75f),
+                            Color.Black.copy(alpha = 0.25f)
+                        )
+                    )
+                )
+        )
+
+        // Conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -339,7 +377,7 @@ fun BannerDestaque(onClick: () -> Unit) {
             Spacer(Modifier.height(6.dp))
             Text(
                 "Restaurantes, pratos tipicos e muito mais.",
-                color = Color.White.copy(alpha = 0.9f),
+                color = Color.White.copy(alpha = 0.95f),
                 fontSize = 13.sp
             )
             Spacer(Modifier.height(16.dp))

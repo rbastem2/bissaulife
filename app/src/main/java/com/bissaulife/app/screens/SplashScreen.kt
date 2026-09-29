@@ -22,16 +22,31 @@ import com.bissaulife.app.R
 
 @Composable
 fun SplashScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    colors = listOf(Color(0xFF001F3F), Color(0xFF003366), Color(0xFF004C99))
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Imagem de fundo cobrindo tudo
+        Image(
+            painter = painterResource(id = R.drawable.splash_bg),
+            contentDescription = "BissauLife",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // Overlay escuro para dar contraste ao texto
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.35f),
+                            Color.Black.copy(alpha = 0.15f),
+                            Color.Black.copy(alpha = 0.55f)
+                        )
+                    )
                 )
-            ),
-        contentAlignment = Alignment.Center
-    ) {
+        )
+
+        // Conteudo por cima
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -41,16 +56,17 @@ fun SplashScreen() {
         ) {
             Spacer(Modifier.weight(1f))
 
+            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "BissauLife Logo",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(130.dp)
                     .clip(RoundedCornerShape(28.dp))
             )
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
 
             Text(
                 text = "BissauLife",
@@ -63,28 +79,29 @@ fun SplashScreen() {
 
             Text(
                 text = "Descubra. Escolha. Compre. Viva.",
-                color = Color.White.copy(alpha = 0.9f),
+                color = Color.White.copy(alpha = 0.95f),
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center
             )
 
             Spacer(Modifier.weight(1f))
 
+            // Loading
             CircularProgressIndicator(
                 color = Color.White,
                 strokeWidth = 4.dp,
-                modifier = Modifier.size(48.dp)
+                modifier = Modifier.size(46.dp)
             )
 
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(14.dp))
 
             Text(
                 text = "A processar...",
-                color = Color.White.copy(alpha = 0.8f),
+                color = Color.White.copy(alpha = 0.85f),
                 fontSize = 13.sp
             )
 
-            Spacer(Modifier.height(60.dp))
+            Spacer(Modifier.height(50.dp))
         }
     }
 }
