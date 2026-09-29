@@ -27,6 +27,7 @@ import com.bissaulife.app.R
 import com.bissaulife.app.data.AuthRepository
 import com.bissaulife.app.data.FavoritosViewModel
 import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.LocalTurista
 import com.bissaulife.app.data.Restaurante
 import com.bissaulife.app.theme.*
 
@@ -38,6 +39,7 @@ fun HomeScreen(
     onAbrirCategoria: (String) -> Unit,
     onAbrirRestaurante: (Restaurante) -> Unit,
     onAbrirItem: (Item, String) -> Unit,
+    onAbrirTurista: (LocalTurista) -> Unit,
     onAbrirPlanos: () -> Unit,
     onAbrirIdiomas: () -> Unit,
     onAbrirSobre: () -> Unit,
@@ -118,7 +120,8 @@ fun HomeScreen(
                 )
                 1 -> ExplorarScreen(
                     onAbrirRestaurante = onAbrirRestaurante,
-                    onAbrirItem = onAbrirItem
+                    onAbrirItem = onAbrirItem,
+                    onAbrirTurista = onAbrirTurista
                 )
                 2 -> FavoritosScreen(
                     viewModel = viewModel,
@@ -175,15 +178,12 @@ fun Cabecalho() {
             .fillMaxWidth()
             .height(220.dp)
     ) {
-        // Imagem de fundo
         Image(
             painter = painterResource(id = R.drawable.home_bg),
             contentDescription = "Bissau",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Overlay escuro para dar contraste
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -197,8 +197,6 @@ fun Cabecalho() {
                     )
                 )
         )
-
-        // Conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -339,15 +337,12 @@ fun BannerDestaque(onClick: () -> Unit) {
             .height(190.dp)
             .clip(RoundedCornerShape(20.dp))
     ) {
-        // Imagem de fundo
         Image(
             painter = painterResource(id = R.drawable.banner_sabores),
             contentDescription = "Sabores da nossa terra",
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize()
         )
-
-        // Overlay escuro para contraste
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -360,8 +355,6 @@ fun BannerDestaque(onClick: () -> Unit) {
                     )
                 )
         )
-
-        // Conteudo
         Column(
             modifier = Modifier
                 .fillMaxSize()

@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -19,12 +20,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bissaulife.app.R
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Negocio
@@ -81,6 +85,54 @@ fun ModaScreen(
                 .padding(padding)
                 .background(Color.White)
         ) {
+            // BANNER com imagem
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .height(160.dp)
+                    .clip(RoundedCornerShape(20.dp))
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.banner_moda),
+                    contentDescription = "Moda",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black.copy(alpha = 0.75f),
+                                    Color.Black.copy(alpha = 0.15f)
+                                )
+                            )
+                        )
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        "Estilo em todas as ocasioes",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "Roupas, calcados, bolsas e acessorios",
+                        color = Color.White.copy(alpha = 0.95f),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            // Filtros
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -114,10 +166,7 @@ fun ModaScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(novosNegocios) { negocio ->
-                    CardNegocioModa(
-                        negocio = negocio,
-                        onClick = { onVerNegocio(negocio) }
-                    )
+                    CardNegocioModa(negocio = negocio, onClick = { onVerNegocio(negocio) })
                 }
                 items(listaFiltrada) { item ->
                     CardProduto(item = item, onClick = { onVerDetalhes(item) })
@@ -170,17 +219,8 @@ fun CardNegocioModa(negocio: Negocio, onClick: () -> Unit) {
         }
 
         Spacer(Modifier.height(8.dp))
-        Text(
-            negocio.nome,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.Black,
-            maxLines = 1
-        )
-
+        Text(negocio.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 1)
         Spacer(Modifier.height(3.dp))
-
-        // Estrela
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(13.dp))
             Spacer(Modifier.width(3.dp))
@@ -188,16 +228,9 @@ fun CardNegocioModa(negocio: Negocio, onClick: () -> Unit) {
             Spacer(Modifier.width(3.dp))
             Text("(Novo)", fontSize = 10.sp, color = Color.Gray)
         }
-
         Spacer(Modifier.height(3.dp))
-        Text(
-            negocio.preco.ifBlank { "Sob consulta" },
-            fontSize = 13.sp,
-            color = Color(0xFF666666)
-        )
-
+        Text(negocio.preco.ifBlank { "Sob consulta" }, fontSize = 13.sp, color = Color(0xFF666666))
         Spacer(Modifier.height(6.dp))
-
         Button(
             onClick = onClick,
             colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),

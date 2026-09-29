@@ -186,6 +186,7 @@ fun iconePara(categoria: String): String {
         "Feiras" -> "🛍️"
         "Combustivel" -> "⛽"
         "Bancos e Cambio" -> "🏦"
+        "Pontos Turisticos" -> "📸"
         else -> "📍"
     }
 }

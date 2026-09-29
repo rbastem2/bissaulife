@@ -43,7 +43,8 @@ fun GuiaTuristaScreen(
         CategoriaTurista("Supermercados", "🛒", Color(0xFFFB8C00)),
         CategoriaTurista("Feiras", "🛍️", Color(0xFFD81B60)),
         CategoriaTurista("Combustivel", "⛽", Color(0xFF546E7A)),
-        CategoriaTurista("Bancos e Cambio", "🏦", Color(0xFF00897B))
+        CategoriaTurista("Bancos e Cambio", "🏦", Color(0xFF00897B)),
+        CategoriaTurista("Pontos Turisticos", "📸", Color(0xFF6A1B9A))
     )
 
     Scaffold(

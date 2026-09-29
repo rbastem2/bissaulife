@@ -87,6 +87,9 @@ class MainActivity : ComponentActivity() {
                                         "beleza" -> navController.navigate("detalhe_item_beleza/${item.id}")
                                     }
                                 },
+                                onAbrirTurista = { local ->
+                                    navController.navigate("detalhe_turista/${local.id}")
+                                },
                                 onAbrirPlanos = { navController.navigate("planos") },
                                 onAbrirIdiomas = { navController.navigate("idiomas") },
                                 onAbrirSobre = { navController.navigate("sobre") },
@@ -219,7 +222,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ===== GUIA DO TURISTA =====
+                        // GUIA DO TURISTA
                         composable("guia_turista") {
                             GuiaTuristaScreen(
                                 onVoltar = { navController.popBackStack() },
@@ -255,7 +258,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        // ===== OUTRAS TELAS =====
+                        // OUTRAS TELAS
                         composable("planos") {
                             PlanosScreen(onVoltar = { navController.popBackStack() })
                         }

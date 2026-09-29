@@ -23,14 +23,15 @@ object LocaisTurista {
         "Supermercados",
         "Feiras",
         "Combustivel",
-        "Bancos e Cambio"
+        "Bancos e Cambio",
+        "Pontos Turisticos"
     )
 
     val lista = listOf(
 
         // HOSPITAIS (17)
         LocalTurista(1, "Hospital Nacional Simao Mendes", "Hospitais", "+245955348876", "Avenida Francisco Mendes, Bissau", "Principal hospital publico da Guine-Bissau. Referencia nacional em atendimento de urgencia, cirurgias e internamento.", "Aberto 24 horas"),
-        LocalTurista(2, "Hospital Militar", "Hospitais", "", "Avenida dos Combatentes da Liberdade da Patria, Bissau", "Hospital militar com atendimento de urgencia. Aceita civis em casos de emergencia. Estrutura ampla e organizada.", "Aberto 24 horas"),
+        LocalTurista(2, "Hospital Militar", "Hospitais", "", "Avenida dos Combatentes da Liberdade da Patria, Bissau", "Hospital militar com atendimento de urgencia. Aceita civis em casos de emergencia.", "Aberto 24 horas"),
         LocalTurista(3, "Hospital 3 de Agosto", "Hospitais", "+245957482277", "Bissau, Guine-Bissau", "Hospital publico com atendimento geral e urgencia.", "Horario comercial"),
         LocalTurista(4, "Hospital Pediatrico de Bor", "Hospitais", "+245966528890", "Bissau, Guine-Bissau", "Hospital pediatrico especializado no atendimento a criancas.", "Aberto 24 horas"),
         LocalTurista(5, "Clinica Madrugada", "Hospitais", "+245955120537", "Bissau, Guine-Bissau", "Clinica com atendimento 24 horas. Uma das mais bem avaliadas da cidade.", "Aberto 24 horas"),
@@ -109,32 +110,42 @@ object LocaisTurista {
         LocalTurista(66, "Good Market", "Supermercados", "+245955930455", "VC55+5CC, Avenida do Brasil, Bissau", "Supermercado com produtos alimentares variados.", "8h as 19h30"),
         LocalTurista(67, "Ponto Fresco", "Supermercados", "+245955400160", "Loja 1 - Rua 7, n 22. Loja 2 - Rua Eduardo Mondelane, n 30, Bissau", "O melhor lugar para se comprar em Bissau. Duas lojas disponiveis.", "Fecha 13h30, reabre 15h30"),
 
-        // FEIRAS (6)
-        LocalTurista(68, "Mercado Artesanal Bissau", "Feiras", "+245955494435", "VC87+GVJ, Avenida da Unidade Africana, Bissau", "Mercado tradicional com grande variedade de trabalhos feitos a mao e esculturas em madeira. Vale a pena negociar!", "7h as 19h"),
-        LocalTurista(69, "Mercado de Bande", "Feiras", "+245955427116", "VC54+3PX, Bissau", "Mercado tradicional com produtos variados. Roupas, calcados e utensilios.", "7h as 18h30"),
-        LocalTurista(70, "Feira de Antula", "Feiras", "+245955546786", "Bissau, Guine-Bissau", "Feira livre com produtos frescos, roupas e utensilios domesticos.", "7h as 17h30"),
-        LocalTurista(71, "Mercado de Caracol", "Feiras", "", "VC32+98X, Bissau", "Mercado tradicional no bairro de Caracol. Produtos locais e artesanato.", "7h as 19h"),
-        LocalTurista(72, "Feira de Agua", "Feiras", "+245956281071", "VCJ5+F58, Bissau", "Centro comercial com produtos variados.", "8h as 18h"),
-        LocalTurista(73, "Mercado Central", "Feiras", "+245955172483", "VC58+4GM, Bissau", "Mercado Central de Bissau. Frutas, legumes e produtos frescos.", "7h as 19h"),
+        // FEIRAS (5)
+        LocalTurista(68, "Mercado de Bande", "Feiras", "+245955427116", "VC54+3PX, Bissau", "Mercado tradicional com produtos variados. Roupas, calcados e utensilios.", "7h as 18h30"),
+        LocalTurista(69, "Feira de Antula", "Feiras", "+245955546786", "Bissau, Guine-Bissau", "Feira livre com produtos frescos, roupas e utensilios domesticos.", "7h as 17h30"),
+        LocalTurista(70, "Mercado de Caracol", "Feiras", "", "VC32+98X, Bissau", "Mercado tradicional no bairro de Caracol. Produtos locais e artesanato.", "7h as 19h"),
+        LocalTurista(71, "Feira de Agua", "Feiras", "+245956281071", "VCJ5+F58, Bissau", "Centro comercial com produtos variados.", "8h as 18h"),
+        LocalTurista(72, "Mercado Central", "Feiras", "+245955172483", "VC58+4GM, Bissau", "Mercado Central de Bissau. Frutas, legumes e produtos frescos.", "7h as 19h"),
 
         // COMBUSTIVEL (6)
-        LocalTurista(74, "SPGC BOLOA", "Combustivel", "", "VC83+HV2, Bolola, Guine-Bissau", "Posto de combustivel em Bolola. Gasolina e gasoleo.", "Horario comercial"),
-        LocalTurista(75, "Petrodis - Guine Bissau", "Combustivel", "", "VC67+VC2, Bissau", "Posto de combustivel com servicos de conveniencia.", "Fecha 13h, reabre 15h"),
-        LocalTurista(76, "Posto de Combustivel GALP", "Combustivel", "", "VC59+7V4, Bissau", "Posto GALP com gasolina e gasoleo.", "6h as 22h"),
-        LocalTurista(77, "Posto de Combustivel PETROMAR-HAFIA", "Combustivel", "", "V9H6+HVV, Bissau", "Posto PETROMAR com gasolina, gasoleo e lubrificantes.", "Aberto 24 horas"),
-        LocalTurista(78, "Estacao de Servico Jolif Antula", "Combustivel", "+245955388837", "Avenida dos Combatentes da Liberdade da Patria, Bissau", "Posto Jolif com loja, lavagem e manutencao.", "Aberto 24 horas"),
-        LocalTurista(79, "SCD Sarl-Bissau", "Combustivel", "", "Unnamed Road, Bissau", "Posto de combustivel SCD-LDA.", "Horario comercial"),
+        LocalTurista(73, "SPGC BOLOA", "Combustivel", "", "VC83+HV2, Bolola, Guine-Bissau", "Posto de combustivel em Bolola. Gasolina e gasoleo.", "Horario comercial"),
+        LocalTurista(74, "Petrodis - Guine Bissau", "Combustivel", "", "VC67+VC2, Bissau", "Posto de combustivel com servicos de conveniencia.", "Fecha 13h, reabre 15h"),
+        LocalTurista(75, "Posto de Combustivel GALP", "Combustivel", "", "VC59+7V4, Bissau", "Posto GALP com gasolina e gasoleo.", "6h as 22h"),
+        LocalTurista(76, "Posto de Combustivel PETROMAR-HAFIA", "Combustivel", "", "V9H6+HVV, Bissau", "Posto PETROMAR com gasolina, gasoleo e lubrificantes.", "Aberto 24 horas"),
+        LocalTurista(77, "Estacao de Servico Jolif Antula", "Combustivel", "+245955388837", "Avenida dos Combatentes da Liberdade da Patria, Bissau", "Posto Jolif com loja, lavagem e manutencao.", "Aberto 24 horas"),
+        LocalTurista(78, "SCD Sarl-Bissau", "Combustivel", "", "Unnamed Road, Bissau", "Posto de combustivel SCD-LDA.", "Horario comercial"),
 
         // BANCOS E CAMBIO (9)
-        LocalTurista(80, "Banco da Africa Ocidental - BAO", "Bancos e Cambio", "+2453203418", "18B Rua 19 Setembro, Bissau", "Um dos maiores bancos comerciais da Guine-Bissau. Caixas multibanco e cambio.", "8h as 16h"),
-        LocalTurista(81, "Banque Atlantique Guinee Bissau", "Bancos e Cambio", "+245956000108", "VC69+FGC, Bissau", "Banco Atlantique. Servicos bancarios e financeiros.", "8h as 16h"),
-        LocalTurista(82, "Orabank", "Bancos e Cambio", "+245966672907", "VC69+GHF, Avenida Pansau Na Isna, Bissau", "Banco comercial com servicos de cambio e transferencias internacionais.", "8h as 16h"),
-        LocalTurista(83, "Coris Bank", "Bancos e Cambio", "", "VC78+23P, Avenida Francisco Mendes, Bissau", "Banco Coris. Servicos bancarios completos.", "Horario comercial"),
-        LocalTurista(84, "Banco da Uniao - S.A.", "Bancos e Cambio", "+245955152037", "VC58+QPF, Avenida Domingos Ramos, Bissau", "Banco da Uniao. Servicos bancarios e cambio.", "8h as 16h30"),
-        LocalTurista(85, "ECOBANK Guine-Bissau", "Bancos e Cambio", "+245965296800", "VC68+CX8, Avenida Amilcar Cabral, Bissau", "Banco pan-africano com servicos de cambio e multicaixa.", "8h as 18h"),
-        LocalTurista(86, "BCAO - Banco Central da Africa Ocidental", "Bancos e Cambio", "", "V98C+5GP, Avenida dos Combatentes da Liberdade da Patria, Bissau", "Banco Central dos Estados da Africa Ocidental. Referencia para cambio oficial.", "8h as 18h"),
-        LocalTurista(87, "Cambio Guine", "Bancos e Cambio", "+2455803638", "VC58+HVW, Avenida Domingos Ramos, Bissau", "Agencia de cambio com boas taxas. Aceita euros, dolares e FCFA.", "8h as 18h"),
-        LocalTurista(88, "Agencia de Cambio Groupbaol", "Bancos e Cambio", "+245955901008", "VC59+74G, Avenida Domingos Ramos, Bissau", "Casa de cambio nacional. Melhores taxas da cidade.", "8h as 18h")
+        LocalTurista(79, "Banco da Africa Ocidental - BAO", "Bancos e Cambio", "+2453203418", "18B Rua 19 Setembro, Bissau", "Um dos maiores bancos comerciais da Guine-Bissau.", "8h as 16h"),
+        LocalTurista(80, "Banque Atlantique Guinee Bissau", "Bancos e Cambio", "+245956000108", "VC69+FGC, Bissau", "Banco Atlantique. Servicos bancarios e financeiros.", "8h as 16h"),
+        LocalTurista(81, "Orabank", "Bancos e Cambio", "+245966672907", "VC69+GHF, Avenida Pansau Na Isna, Bissau", "Banco comercial com servicos de cambio e transferencias.", "8h as 16h"),
+        LocalTurista(82, "Coris Bank", "Bancos e Cambio", "", "VC78+23P, Avenida Francisco Mendes, Bissau", "Banco Coris. Servicos bancarios completos.", "Horario comercial"),
+        LocalTurista(83, "Banco da Uniao - S.A.", "Bancos e Cambio", "+245955152037", "VC58+QPF, Avenida Domingos Ramos, Bissau", "Banco da Uniao. Servicos bancarios e cambio.", "8h as 16h30"),
+        LocalTurista(84, "ECOBANK Guine-Bissau", "Bancos e Cambio", "+245965296800", "VC68+CX8, Avenida Amilcar Cabral, Bissau", "Banco pan-africano com servicos de cambio e multicaixa.", "8h as 18h"),
+        LocalTurista(85, "BCAO - Banco Central da Africa Ocidental", "Bancos e Cambio", "", "V98C+5GP, Avenida dos Combatentes da Liberdade da Patria, Bissau", "Banco Central dos Estados da Africa Ocidental.", "8h as 18h"),
+        LocalTurista(86, "Cambio Guine", "Bancos e Cambio", "+2455803638", "VC58+HVW, Avenida Domingos Ramos, Bissau", "Agencia de cambio com boas taxas. Aceita euros, dolares e FCFA.", "8h as 18h"),
+        LocalTurista(87, "Agencia de Cambio Groupbaol", "Bancos e Cambio", "+245955901008", "VC59+74G, Avenida Domingos Ramos, Bissau", "Casa de cambio nacional. Melhores taxas da cidade.", "8h as 18h"),
+
+        // PONTOS TURISTICOS (9)
+        LocalTurista(88, "Fort Sao Jose da Amura", "Pontos Turisticos", "", "VC6C+5FJ, Bissau", "Fortaleza historica de Bissau. Construcao colonial do seculo XVII. Ponto turistico com vista para o mar.", "Aberto 24 horas"),
+        LocalTurista(89, "Tres Polons", "Pontos Turisticos", "", "VCM8+WJ8, Unnamed Road, Bissau", "Parque com tres torres de comunicacao. Ponto de referencia na cidade.", "Aberto 24 horas"),
+        LocalTurista(90, "IBAP - Instituto da Biodiversidade", "Pontos Turisticos", "+245957656701", "VCF4+53V, Bissau", "Instituto de pesquisa em biodiversidade e areas protegidas. Visitas guiadas disponiveis. Melhor epoca: novembro a maio.", "9h as 17h"),
+        LocalTurista(91, "Parque Lagoa N'Batonha", "Pontos Turisticos", "", "VC48+PC8, Avenida do 3 do Agosto, Bissau", "Parque natural com lagoa, vegetacao e areas de caminhada. Ideal para relaxar e observar aves.", "Aberto 24 horas"),
+        LocalTurista(92, "Mao de Timba", "Pontos Turisticos", "", "VC49+VP3, Avenida do 3 de Agosto, Bissau", "Monumento historico e simbolo nacional. Marco da resistencia guineense.", "Aberto 24 horas"),
+        LocalTurista(93, "Galeria Art's Santos", "Pontos Turisticos", "+245956971590", "VCH2+XP, Bissau", "Galeria de arte com obras de artistas guineenses. Pinturas e esculturas.", "9h as 17h"),
+        LocalTurista(94, "Praca dos Herois Nacionais", "Pontos Turisticos", "+245956304608", "VC78+77F, Bissau", "Praca memorial com monumento aos herois nacionais. Perto do palacio presidencial. Bom para caminhadas.", "Aberto 24 horas"),
+        LocalTurista(95, "Rotunda de Alto Bandim", "Pontos Turisticos", "", "RCQ3+QWW, Avenida 3 de Agosto, Bissau", "Atracao turistica com rotunda principal. Ponto de encontro da cidade.", "Aberto 24 horas"),
+        LocalTurista(96, "Praca Ernesto Guevara 'Che'", "Pontos Turisticos", "", "VC68+2JR, Che, Bissau", "Praca historica com monumento a Ernesto Che Guevara. Simbolo da solidariedade internacional.", "Aberto 24 horas")
     )
 
     fun porCategoria(categoria: String): List<LocalTurista> {

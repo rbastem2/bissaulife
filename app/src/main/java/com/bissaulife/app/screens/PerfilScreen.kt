@@ -283,6 +283,11 @@ fun PerfilScreen(
             }
         }
 
+        Spacer(Modifier.height(16.dp))
+
+        // BOTAO DE DOACAO
+        BotaoDoacao()
+
         // Botao Sair
         if (estaLogado) {
             Spacer(Modifier.height(16.dp))
@@ -337,17 +342,8 @@ fun PerfilScreen(
                     .padding(20.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    "Juntos fazemos",
-                    color = Color.White,
-                    fontSize = 14.sp
-                )
-                Text(
-                    "Bissau crescer!",
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Text("Juntos fazemos", color = Color.White, fontSize = 14.sp)
+                Text("Bissau crescer!", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
                 Text("💚❤️💛", fontSize = 18.sp)
             }

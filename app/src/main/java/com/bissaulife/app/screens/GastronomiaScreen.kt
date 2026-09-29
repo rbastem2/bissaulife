@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -17,12 +18,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bissaulife.app.R
 import com.bissaulife.app.data.Negocio
 import com.bissaulife.app.data.NegociosViewModel
 import com.bissaulife.app.data.Restaurante
@@ -38,7 +42,7 @@ fun GastronomiaScreen(
     onVerNegocio: (Negocio) -> Unit
 ) {
     var filtroSelecionado by remember { mutableStateOf("Todos") }
-    val filtros = listOf("Todos", "Restaurantes", "Comida típica", "Bolos")
+    val filtros = listOf("Todos", "Restaurantes", "Comida tipica", "Bolos")
 
     LaunchedEffect(Unit) {
         negociosVM.recarregar()
@@ -49,8 +53,8 @@ fun GastronomiaScreen(
     val listaFiltrada = remember(filtroSelecionado) {
         when (filtroSelecionado) {
             "Todos" -> Restaurantes.lista
-            "Restaurantes" -> Restaurantes.lista.filter { it.categoria.contains("Português", true) }
-            "Comida típica" -> Restaurantes.lista.filter {
+            "Restaurantes" -> Restaurantes.lista.filter { it.categoria.contains("Portugues", true) }
+            "Comida tipica" -> Restaurantes.lista.filter {
                 it.categoria.contains("Tradicional", true) || it.categoria.contains("Africana", true)
             }
             "Bolos" -> Restaurantes.lista.filter { it.categoria.contains("Doces", true) }
@@ -69,7 +73,7 @@ fun GastronomiaScreen(
                 },
                 actions = {
                     IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Notifications, contentDescription = "Notificações")
+                        Icon(Icons.Filled.Notifications, contentDescription = "Notificacoes")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -85,6 +89,54 @@ fun GastronomiaScreen(
                 .padding(padding)
                 .background(Color.White)
         ) {
+            // BANNER com imagem
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .height(160.dp)
+                    .clip(RoundedCornerShape(20.dp))
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.banner_gastronomia),
+                    contentDescription = "Gastronomia",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color.Black.copy(alpha = 0.75f),
+                                    Color.Black.copy(alpha = 0.15f)
+                                )
+                            )
+                        )
+                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        "Sabores da nossa terra",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(Modifier.height(6.dp))
+                    Text(
+                        "Restaurantes, pratos tipicos e muito mais",
+                        color = Color.White.copy(alpha = 0.95f),
+                        fontSize = 12.sp
+                    )
+                }
+            }
+
+            // Filtros
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -126,10 +178,7 @@ fun GastronomiaScreen(
                         )
                     }
                     items(novosNegocios) { negocio ->
-                        CardNegocio(
-                            negocio = negocio,
-                            onClick = { onVerNegocio(negocio) }
-                        )
+                        CardNegocio(negocio = negocio, onClick = { onVerNegocio(negocio) })
                     }
                     item {
                         Spacer(Modifier.height(8.dp))
@@ -185,10 +234,7 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
 
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = RoundedCornerShape(6.dp),
-                    color = BissauGreen
-                ) {
+                Surface(shape = RoundedCornerShape(6.dp), color = BissauGreen) {
                     Text(
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
@@ -202,7 +248,6 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
             }
             Spacer(Modifier.height(4.dp))
             Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
@@ -211,7 +256,6 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
                 Spacer(Modifier.width(4.dp))
                 Text("(Novo)", fontSize = 11.sp, color = Color.Gray)
             }
-
             Spacer(Modifier.height(4.dp))
             Text(negocio.descricao, fontSize = 12.sp, color = Color(0xFF666666), maxLines = 2)
             if (negocio.preco.isNotBlank()) {
@@ -220,9 +264,7 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
             }
             Spacer(Modifier.height(6.dp))
             Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
-
             Spacer(Modifier.height(8.dp))
-
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
@@ -258,7 +300,6 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
         Column(modifier = Modifier.weight(1f)) {
             Text(restaurante.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black)
             Spacer(Modifier.height(4.dp))
-
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(4.dp))
@@ -266,9 +307,7 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
                 Spacer(Modifier.width(4.dp))
                 Text("(${restaurante.avaliacoes})", fontSize = 12.sp, color = Color.Gray)
             }
-
             Spacer(Modifier.height(4.dp))
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
@@ -276,9 +315,7 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
                 Text(restaurante.categoria, fontSize = 12.sp, color = Color.Gray, modifier = Modifier.weight(1f))
                 Text("📍 ${restaurante.distancia}", fontSize = 11.sp, color = Color.Gray)
             }
-
             Spacer(Modifier.height(8.dp))
-
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),

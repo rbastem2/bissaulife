@@ -2,9 +2,11 @@ package com.bissaulife.app.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
@@ -24,10 +26,13 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.bissaulife.app.data.Beleza
 import com.bissaulife.app.data.Item
+import com.bissaulife.app.data.LocalTurista
+import com.bissaulife.app.data.LocaisTurista
 import com.bissaulife.app.data.Moda
 import com.bissaulife.app.data.Restaurante
 import com.bissaulife.app.data.Restaurantes
 import com.bissaulife.app.data.Viagens
+import com.bissaulife.app.theme.BissauBlue
 import com.bissaulife.app.theme.BissauGreen
 import com.bissaulife.app.theme.BissauOrange
 import com.bissaulife.app.theme.BissauPink
@@ -38,51 +43,82 @@ sealed class ResultadoBusca {
     data class ModaR(val item: Item) : ResultadoBusca()
     data class ViagemR(val item: Item) : ResultadoBusca()
     data class BelezaR(val item: Item) : ResultadoBusca()
+    data class TuristaR(val item: LocalTurista) : ResultadoBusca()
 }
 
 @Composable
 fun ExplorarScreen(
     onAbrirRestaurante: (Restaurante) -> Unit,
-    onAbrirItem: (Item, String) -> Unit
+    onAbrirItem: (Item, String) -> Unit,
+    onAbrirTurista: (LocalTurista) -> Unit
 ) {
     var query by remember { mutableStateOf("") }
+    var filtroSelecionado by remember { mutableStateOf("Todos") }
 
-    val resultados = remember(query) {
-        if (query.trim().length < 2) emptyList()
+    val filtros = listOf("Todos", "Gastronomia", "Moda", "Viagens", "Beleza", "Guia")
+
+    val resultados = remember(query, filtroSelecionado) {
+        if (query.trim().length < 3) emptyList()
         else {
             val q = query.trim().lowercase()
             buildList {
-                Restaurantes.lista
-                    .filter {
-                        it.nome.lowercase().contains(q) ||
-                        it.categoria.lowercase().contains(q) ||
-                        it.descricao.lowercase().contains(q)
-                    }
-                    .forEach { add(ResultadoBusca.RestauranteR(it)) }
 
-                Moda.lista
-                    .filter {
-                        it.nome.lowercase().contains(q) ||
-                        it.categoria.lowercase().contains(q) ||
-                        it.descricao.lowercase().contains(q)
-                    }
-                    .forEach { add(ResultadoBusca.ModaR(it)) }
+                // Gastronomia
+                if (filtroSelecionado == "Todos" || filtroSelecionado == "Gastronomia") {
+                    Restaurantes.lista
+                        .filter {
+                            it.nome.lowercase().contains(q) ||
+                            it.categoria.lowercase().contains(q) ||
+                            it.descricao.lowercase().contains(q) ||
+                            it.endereco.lowercase().contains(q)
+                        }
+                        .forEach { add(ResultadoBusca.RestauranteR(it)) }
+                }
 
-                Viagens.lista
-                    .filter {
-                        it.nome.lowercase().contains(q) ||
-                        it.categoria.lowercase().contains(q) ||
-                        it.descricao.lowercase().contains(q)
-                    }
-                    .forEach { add(ResultadoBusca.ViagemR(it)) }
+                // Moda
+                if (filtroSelecionado == "Todos" || filtroSelecionado == "Moda") {
+                    Moda.lista
+                        .filter {
+                            it.nome.lowercase().contains(q) ||
+                            it.categoria.lowercase().contains(q) ||
+                            it.descricao.lowercase().contains(q)
+                        }
+                        .forEach { add(ResultadoBusca.ModaR(it)) }
+                }
 
-                Beleza.lista
-                    .filter {
-                        it.nome.lowercase().contains(q) ||
-                        it.categoria.lowercase().contains(q) ||
-                        it.descricao.lowercase().contains(q)
-                    }
-                    .forEach { add(ResultadoBusca.BelezaR(it)) }
+                // Viagens
+                if (filtroSelecionado == "Todos" || filtroSelecionado == "Viagens") {
+                    Viagens.lista
+                        .filter {
+                            it.nome.lowercase().contains(q) ||
+                            it.categoria.lowercase().contains(q) ||
+                            it.descricao.lowercase().contains(q)
+                        }
+                        .forEach { add(ResultadoBusca.ViagemR(it)) }
+                }
+
+                // Beleza
+                if (filtroSelecionado == "Todos" || filtroSelecionado == "Beleza") {
+                    Beleza.lista
+                        .filter {
+                            it.nome.lowercase().contains(q) ||
+                            it.categoria.lowercase().contains(q) ||
+                            it.descricao.lowercase().contains(q)
+                        }
+                        .forEach { add(ResultadoBusca.BelezaR(it)) }
+                }
+
+                // Guia do Turista (todas as categorias)
+                if (filtroSelecionado == "Todos" || filtroSelecionado == "Guia") {
+                    LocaisTurista.lista
+                        .filter {
+                            it.nome.lowercase().contains(q) ||
+                            it.categoria.lowercase().contains(q) ||
+                            it.descricao.lowercase().contains(q) ||
+                            it.endereco.lowercase().contains(q)
+                        }
+                        .forEach { add(ResultadoBusca.TuristaR(it)) }
+                }
             }
         }
     }
@@ -113,7 +149,7 @@ fun ExplorarScreen(
             onValueChange = { query = it },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             placeholder = { Text("Buscar restaurantes, lojas, hoteis...", fontSize = 13.sp) },
             leadingIcon = { Icon(Icons.Filled.Search, null, tint = Color.Gray) },
             trailingIcon = {
@@ -127,9 +163,37 @@ fun ExplorarScreen(
             singleLine = true
         )
 
+        // Filtros
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            filtros.forEach { filtro ->
+                val selecionado = filtro == filtroSelecionado
+                Surface(
+                    onClick = { filtroSelecionado = filtro },
+                    shape = RoundedCornerShape(20.dp),
+                    color = if (selecionado) BissauGreen else Color(0xFFF0F0F0)
+                ) {
+                    Text(
+                        filtro,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        color = if (selecionado) Color.White else Color.Black,
+                        fontSize = 13.sp,
+                        fontWeight = if (selecionado) FontWeight.SemiBold else FontWeight.Normal
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(8.dp))
+
         // Conteudo
         when {
-            query.trim().length < 2 -> InstrucoesBusca()
+            query.trim().length < 3 -> InstrucoesBusca()
             resultados.isEmpty() -> NadaEncontrado(query)
             else -> {
                 Text(
@@ -177,7 +241,7 @@ fun ExplorarScreen(
                                     preco = "A partir de ${resultado.item.preco}",
                                     nota = resultado.item.nota,
                                     tipo = "Viagem",
-                                    corTipo = Color(0xFF2196F3),
+                                    corTipo = BissauBlue,
                                     onClick = { onAbrirItem(resultado.item, "viagem") }
                                 )
                             }
@@ -191,6 +255,12 @@ fun ExplorarScreen(
                                     tipo = "Beleza",
                                     corTipo = BissauPink,
                                     onClick = { onAbrirItem(resultado.item, "beleza") }
+                                )
+                            }
+                            is ResultadoBusca.TuristaR -> {
+                                CardResultadoTurista(
+                                    item = resultado.item,
+                                    onClick = { onAbrirTurista(resultado.item) }
                                 )
                             }
                         }
@@ -225,7 +295,7 @@ fun InstrucoesBusca() {
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            "Digite pelo menos 2 letras para buscar em restaurantes, moda, viagens e beleza.",
+            "Digite pelo menos 3 letras para buscar em restaurantes, moda, viagens, beleza e todo o Guia do Turista.",
             fontSize = 13.sp,
             color = Color(0xFF999999),
             textAlign = TextAlign.Center,
@@ -298,10 +368,7 @@ fun CardResultado(
             Spacer(Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
-                Surface(
-                    shape = RoundedCornerShape(6.dp),
-                    color = corTipo.copy(alpha = 0.15f)
-                ) {
+                Surface(shape = RoundedCornerShape(6.dp), color = corTipo.copy(alpha = 0.15f)) {
                     Text(
                         tipo,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
@@ -311,42 +378,66 @@ fun CardResultado(
                     )
                 }
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    nome,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    maxLines = 1
-                )
+                Text(nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1)
                 Spacer(Modifier.height(2.dp))
-                Text(
-                    categoria,
-                    fontSize = 11.sp,
-                    color = Color.Gray,
-                    maxLines = 1
-                )
+                Text(categoria, fontSize = 11.sp, color = Color.Gray, maxLines = 1)
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFFFC107),
-                        modifier = Modifier.size(13.dp)
-                    )
+                    Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(13.dp))
                     Spacer(Modifier.width(3.dp))
-                    Text(
-                        "$nota",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFFFF9800)
-                    )
+                    Text("$nota", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFFFF9800))
                     Spacer(Modifier.weight(1f))
+                    Text(preco, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = BissauGreen)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CardResultadoTurista(item: LocalTurista, onClick: () -> Unit) {
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFAFAFA)),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(BissauGreen.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(iconePara(item.categoria), fontSize = 26.sp)
+            }
+
+            Spacer(Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Surface(shape = RoundedCornerShape(6.dp), color = BissauGreen.copy(alpha = 0.15f)) {
                     Text(
-                        preco,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = BissauGreen
+                        "Guia • ${item.categoria}",
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                        fontSize = 10.sp,
+                        color = BissauGreen,
+                        fontWeight = FontWeight.SemiBold
                     )
+                }
+                Spacer(Modifier.height(4.dp))
+                Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1)
+                Spacer(Modifier.height(2.dp))
+                Text("📍 ${item.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
+                if (item.telefone.isNotBlank()) {
+                    Spacer(Modifier.height(2.dp))
+                    Text("📞 ${item.telefone}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
                 }
             }
         }

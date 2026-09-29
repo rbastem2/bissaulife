@@ -1,5 +1,6 @@
 package com.bissaulife.app.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,10 +25,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.bissaulife.app.R
 import com.bissaulife.app.data.Item
 import com.bissaulife.app.data.Negocio
 import com.bissaulife.app.data.NegociosViewModel
@@ -81,7 +84,52 @@ fun ViagensScreen(
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
-                BannerViagens()
+                // BANNER com imagem
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(20.dp))
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.banner_viagens),
+                        contentDescription = "Viagens",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.7f),
+                                        Color.Black.copy(alpha = 0.1f)
+                                    )
+                                )
+                            )
+                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            "Explore a Guine-Bissau",
+                            color = Color.White,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "Ilhas, cultura, natureza e aventura",
+                            color = Color.White.copy(alpha = 0.95f),
+                            fontSize = 13.sp
+                        )
+                    }
+                }
                 Spacer(Modifier.height(16.dp))
             }
 
@@ -107,10 +155,7 @@ fun ViagensScreen(
                     Spacer(Modifier.height(8.dp))
                 }
                 items(novosNegocios) { negocio ->
-                    ItemViagemNegocio(
-                        negocio = negocio,
-                        onClick = { onVerNegocio(negocio) }
-                    )
+                    ItemViagemNegocio(negocio = negocio, onClick = { onVerNegocio(negocio) })
                     Spacer(Modifier.height(12.dp))
                 }
                 item {
@@ -192,10 +237,7 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
 
         Column(modifier = Modifier.weight(1f)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Surface(
-                    shape = RoundedCornerShape(6.dp),
-                    color = BissauGreen
-                ) {
+                Surface(shape = RoundedCornerShape(6.dp), color = BissauGreen) {
                     Text(
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
@@ -209,7 +251,6 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
             }
             Spacer(Modifier.height(4.dp))
             Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
-
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
@@ -218,16 +259,13 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
                 Spacer(Modifier.width(4.dp))
                 Text("(Novo)", fontSize = 11.sp, color = Color.Gray)
             }
-
             Spacer(Modifier.height(4.dp))
             if (negocio.preco.isNotBlank()) {
                 Text("A partir de ${negocio.preco}", fontSize = 13.sp, color = Color(0xFF666666))
             }
             Spacer(Modifier.height(4.dp))
             Text("📍 ${negocio.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
-
             Spacer(Modifier.height(8.dp))
-
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
@@ -237,43 +275,6 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
             ) {
                 Text("Ver detalhes", fontSize = 12.sp)
             }
-        }
-    }
-}
-
-@Composable
-fun BannerViagens() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .height(180.dp)
-            .clip(RoundedCornerShape(20.dp))
-    ) {
-        AsyncImage(
-            model = "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=800&q=80",
-            contentDescription = "Guine-Bissau",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.horizontalGradient(
-                        colors = listOf(Color.Black.copy(alpha = 0.7f), Color.Black.copy(alpha = 0.1f))
-                    )
-                )
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("Explore a Guine-Bissau", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(6.dp))
-            Text("Ilhas, cultura, natureza e aventura", color = Color.White.copy(alpha = 0.9f), fontSize = 13.sp)
         }
     }
 }

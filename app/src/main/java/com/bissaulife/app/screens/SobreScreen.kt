@@ -91,7 +91,7 @@ fun SobreScreen(onVoltar: () -> Unit) {
                 .padding(padding)
                 .background(Color(0xFFF5F5F5))
                 .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+                .padding(vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
@@ -112,7 +112,7 @@ fun SobreScreen(onVoltar: () -> Unit) {
                 color = Color.Black
             )
             Text(
-                "Versao 1.1",
+                "Versao 1.2",
                 fontSize = 13.sp,
                 color = Color.Gray
             )
@@ -122,7 +122,9 @@ fun SobreScreen(onVoltar: () -> Unit) {
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     Text(
@@ -151,7 +153,9 @@ fun SobreScreen(onVoltar: () -> Unit) {
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Row(
                     modifier = Modifier
@@ -160,7 +164,7 @@ fun SobreScreen(onVoltar: () -> Unit) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     StatItem("4", "Categorias")
-                    StatItem("24", "Lugares")
+                    StatItem("96", "Locais no Guia")
                     StatItem("100%", "Guineense")
                 }
             }
@@ -170,7 +174,9 @@ fun SobreScreen(onVoltar: () -> Unit) {
             Card(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             ) {
                 Column {
                     Text(
@@ -209,6 +215,11 @@ fun SobreScreen(onVoltar: () -> Unit) {
                     )
                 }
             }
+
+            Spacer(Modifier.height(20.dp))
+
+            // BOTAO DE DOACAO
+            BotaoDoacao()
 
             Spacer(Modifier.height(24.dp))
 
