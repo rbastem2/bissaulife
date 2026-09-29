@@ -32,7 +32,7 @@ import com.bissaulife.app.R
 import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
-private const val EMAIL_CONTATO = "contato@bissaulife.gw"
+private const val EMAIL_CONTATO = "bissaulife@gmail.com"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

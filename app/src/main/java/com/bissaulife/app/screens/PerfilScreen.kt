@@ -30,7 +30,7 @@ import com.bissaulife.app.R
 import com.bissaulife.app.theme.BissauGreen
 
 private const val WHATSAPP_COMERCIAL = "245955572393"
-private const val EMAIL_ADMIN = "rbastem2@gmail.com"
+private const val EMAIL_ADMIN = "bissaulife@gmail.com"
 
 @Composable
 fun PerfilScreen(
