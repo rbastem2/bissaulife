@@ -385,6 +385,7 @@ fun CadastroNegocioScreen(
 }
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun TelaEmailNaoVerificado(
     onVoltar: () -> Unit,
     onVerificarEmail: () -> Unit
