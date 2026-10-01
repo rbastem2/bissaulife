@@ -1,0 +1,233 @@
+================================================================
+RELATORIO DE AUDITORIA - BISSAULIFE v1.2
+Data: 30/09/2026
+================================================================
+
+RESUMO EXECUTIVO
+----------------------------------------------------------------
+Sistemas funcionando 100%: 8
+Dados reais no app: 96 locais (Guia do Turista)
+Dados ficticios: 22 itens no marketplace
+Funcionalidades nao implementadas: 7
+Email/Site ficticio: 1 (site bissaulife.gw)
+
+
+================================================================
+1. O QUE FUNCIONA 100%
+================================================================
+
+1.1 Sistema de Login/Conta
+    - Criar conta
+    - Fazer login
+    - Logout
+    - Firebase Auth (nuvem)
+
+1.2 Cadastro de Lojistas
+    - Formulario completo
+    - Envia para o Firestore
+    - Aparece no Painel Admin como "pendente"
+
+1.3 Painel Admin
+    - Aprovar negocios
+    - Rejeitar negocios
+    - Abas "Pendentes" e "Aprovados"
+
+1.4 Favoritos
+    - Salva no celular
+    - Sobrevive ao fechar o app
+    - Funciona em todas as categorias
+
+1.5 Busca (Explorar)
+    - Busca em Gastronomia, Moda, Viagens, Beleza
+    - Busca em TODOS os 96 locais do Guia
+    - 6 filtros: Todos, Gastronomia, Moda, Viagens, Beleza, Guia
+
+1.6 Guia do Turista
+    - 96 locais REAIS de Bissau
+    - 11 categorias:
+      Hospitais, Embaixadas, Ministerios, Futebol, Farmacias,
+      Discotecas, Supermercados, Feiras, Combustivel,
+      Bancos e Cambio, Pontos Turisticos
+
+1.7 Botao de Doacao
+    - Orange Money (via WhatsApp)
+    - Transferencia Bancaria (Banque Atlantique)
+
+1.8 Navegacao/Design
+    - Todas as telas funcionam
+    - Imagens reais no Splash, Home, Gastronomia, Moda,
+      Viagens, Perfil
+
+
+================================================================
+2. DADOS FICTICIOS (ATENCAO!)
+================================================================
+
+2.1 RESTAURANTES (Gastronomia)
+
+    REAIS:
+    - Restaurante Dona Fernanda
+    - Rasoi Restaurant
+
+    FICTICIOS:
+    - Restaurante Sabor de Bissau
+    - Tchana - Comida Tradicional
+    - Doce Mel
+    - Marisol
+
+    ATENCAO: Telefones, enderecos, horarios e avaliacoes
+    dos 4 ficticios sao INVENTADOS.
+
+
+2.2 MODA
+
+    TODOS os 6 produtos sao FICTICIOS:
+    - Vestido tradicional
+    - Tenis unissex
+    - Bolsa de couro
+    - Oculos de sol
+    - Chapeu de palha
+    - Relogio classico
+
+    ATENCAO: Nomes, precos, telefones e enderecos INVENTADOS.
+
+
+2.3 VIAGENS
+
+    REAIS:
+    - Hala Hotel & Aquapark
+
+    FICTICIOS:
+    - Ilha de Orango
+    - Hotel Bissau
+    - Praia de Varela
+    - Casa de hospedes
+    - Passeio de barco
+    - Safari na natureza
+
+    ATENCAO: Precos, telefones e descricoes INVENTADOS.
+
+
+2.4 BELEZA
+
+    TODOS os 6 sao FICTICIOS:
+    - Salao Glamour
+    - Spa Relax
+    - Nail Studio
+    - Make-up Art
+    - Cabelo Afro
+    - Studio Beleza Natural
+
+    ATENCAO: Tudo INVENTADO.
+
+
+2.5 GUIA DO TURISTA
+
+    TODOS os 96 locais sao REAIS.
+    Vieram dos prints do Google Maps.
+    Telefones, enderecos e horarios REAIS.
+
+    EXCECAO: 2-3 locais nao tinham telefone nos prints,
+    entao estao em branco.
+
+
+2.6 IMAGENS
+
+    Todas as imagens dos itens (restaurantes, moda, viagens,
+    beleza) sao do Unsplash - GENERICAS, nao sao fotos reais
+    dos lugares.
+
+    EXCECAO: banners de Gastronomia, Moda, Viagens e Perfil
+    (imagens personalizadas foram inseridas).
+
+
+================================================================
+3. O QUE NAO FUNCIONA
+================================================================
+
+3.1 Pagamento automatico no app
+    - Nao integrado (so via WhatsApp)
+
+3.2 Notificacoes push
+    - Nao implementado
+
+3.3 Modo escuro
+    - Desabilitado ("em breve")
+
+3.4 Avaliacoes de usuarios
+    - So mostra numeros ficticios
+
+3.5 Upload de imagens
+    - Lojista cola link (nao faz upload direto)
+
+3.6 Site bissaulife.gw
+    - NAO EXISTE (ficticio)
+
+3.7 AdMob
+    - Nao integrado
+
+
+================================================================
+4. RECOMENDACOES
+================================================================
+
+4.1 ANTES DE DIVULGAR
+
+    Prioridade ALTA:
+    - Remover OU marcar como "exemplo" os 22 itens ficticios
+    - OU substituir por dados reais (fazer prints do Google Maps)
+    - Corrigir o site bissaulife.gw -> trocar por "em breve"
+
+    Prioridade MEDIA:
+    - Adicionar aviso "Em breve mais lugares reais"
+    - Divulgar o GUIA DO TURISTA (e o unico 100% real)
+
+
+4.2 OPCOES PARA DIVULGACAO
+
+    Opcao A: Divulgar SO o Guia do Turista
+             (recomendado - e 100% real)
+
+    Opcao B: Remover ficticios e deixar so os reais
+             (ficaria: 2 restaurantes + 1 hotel + 96 no Guia)
+
+    Opcao C: Marcar ficticios com tarja "EXEMPLO"
+             (usuario sabe que e demo)
+
+    Opcao D: Substituir ficticios por reais
+             (fazer prints do Google Maps um por um)
+
+
+================================================================
+5. ESTATISTICAS DO APP
+================================================================
+
+Total de locais no app: 96 (Guia) + 22 (marketplace) = 118
+
+Dados reais: 96 (81%)
+Dados ficticios: 22 (19%)
+
+Telas funcionando: 20+
+Telas com problema: 0
+
+Firebase conectado: SIM
+Painel Admin funcionando: SIM
+Login funcionando: SIM
+Favoritos funcionando: SIM
+Busca funcionando: SIM
+
+
+================================================================
+6. PROXIMOS PASSOS SUGERIDOS
+================================================================
+
+1. Decidir o que fazer com os 22 ficticios (A, B, C ou D)
+2. Divulgar o app focando no Guia do Turista
+3. Adicionar mais lugares reais com prints do Google Maps
+4. Criar conta na Play Store (quando tiver US$ 25)
+5. Publicar oficialmente
+
+
+================================================================
+FIM DO RELATORIO
+================================================================

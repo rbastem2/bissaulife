@@ -23,6 +23,7 @@ import com.bissaulife.app.screens.DetalheItemScreen
 import com.bissaulife.app.screens.DetalheNegocioScreen
 import com.bissaulife.app.screens.DetalheScreen
 import com.bissaulife.app.screens.DetalheTuristaScreen
+import com.bissaulife.app.screens.EsqueciSenhaScreen
 import com.bissaulife.app.screens.GastronomiaScreen
 import com.bissaulife.app.screens.GuiaTuristaScreen
 import com.bissaulife.app.screens.HomeScreen
@@ -33,6 +34,7 @@ import com.bissaulife.app.screens.ModaScreen
 import com.bissaulife.app.screens.PlanosScreen
 import com.bissaulife.app.screens.SobreScreen
 import com.bissaulife.app.screens.SplashScreen
+import com.bissaulife.app.screens.VerificarEmailScreen
 import com.bissaulife.app.screens.ViagensScreen
 import com.bissaulife.app.theme.BissauBlue
 import com.bissaulife.app.theme.BissauGreen
@@ -98,6 +100,7 @@ class MainActivity : ComponentActivity() {
                                 onAbrirCadastroNegocio = { navController.navigate("cadastro_negocio") },
                                 onAbrirAdmin = { navController.navigate("admin") },
                                 onAbrirGuiaTurista = { navController.navigate("guia_turista") },
+                                onAbrirVerificarEmail = { navController.navigate("verificar_email") },
                                 onLogout = { versaoRecomposicao++ }
                             )
                         }
@@ -281,20 +284,41 @@ class MainActivity : ComponentActivity() {
                                 onLoginSucesso = {
                                     versaoRecomposicao++
                                     navController.popBackStack()
+                                },
+                                onEsqueciSenha = {
+                                    navController.navigate("esqueci_senha")
                                 }
+                            )
+                        }
+
+                        composable("esqueci_senha") {
+                            EsqueciSenhaScreen(
+                                onVoltar = { navController.popBackStack() }
                             )
                         }
 
                         composable("cadastro_negocio") {
                             CadastroNegocioScreen(
                                 onVoltar = { navController.popBackStack() },
-                                onSucesso = { navController.popBackStack() }
+                                onSucesso = { navController.popBackStack() },
+                                onVerificarEmail = {
+                                    navController.navigate("verificar_email")
+                                }
                             )
                         }
 
                         composable("admin") {
                             AdminScreen(
                                 onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
+                        composable("verificar_email") {
+                            VerificarEmailScreen(
+                                onVoltar = {
+                                    versaoRecomposicao++
+                                    navController.popBackStack()
+                                }
                             )
                         }
                     }

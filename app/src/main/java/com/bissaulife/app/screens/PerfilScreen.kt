@@ -36,6 +36,7 @@ private const val EMAIL_ADMIN = "bissaulife@gmail.com"
 fun PerfilScreen(
     estaLogado: Boolean,
     emailUsuario: String,
+    emailVerificado: Boolean,
     onAbrirPlanos: () -> Unit,
     onAbrirIdiomas: () -> Unit,
     onAbrirSobre: () -> Unit,
@@ -43,6 +44,7 @@ fun PerfilScreen(
     onAbrirLogin: () -> Unit,
     onAbrirCadastroNegocio: () -> Unit,
     onAbrirAdmin: () -> Unit,
+    onAbrirVerificarEmail: () -> Unit,
     onLogout: () -> Unit
 ) {
     val context = LocalContext.current
@@ -125,6 +127,49 @@ fun PerfilScreen(
         }
 
         Spacer(Modifier.height(16.dp))
+
+        // Aviso de email nao verificado
+        if (estaLogado && !emailVerificado) {
+            Card(
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF3E0)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .clickable { onAbrirVerificarEmail() }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("📧", fontSize = 28.sp)
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            "Confirme seu email",
+                            color = Color(0xFFE65100),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(Modifier.height(3.dp))
+                        Text(
+                            "Toque aqui para verificar",
+                            color = Color(0xFFE65100).copy(alpha = 0.85f),
+                            fontSize = 12.sp
+                        )
+                    }
+                    Icon(
+                        Icons.Filled.ArrowForwardIos,
+                        contentDescription = null,
+                        tint = Color(0xFFE65100),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+            Spacer(Modifier.height(16.dp))
+        }
 
         // Botao Entrar (se NAO logado)
         if (!estaLogado) {
@@ -270,7 +315,7 @@ fun PerfilScreen(
                 ItemMenu(
                     icone = Icons.Filled.Info,
                     titulo = "Sobre o BissauLife",
-                    subtitulo = "Versao 1.2",
+                    subtitulo = "Versao 1.3",
                     onClick = onAbrirSobre
                 )
                 Divider(color = Color(0xFFEEEEEE))

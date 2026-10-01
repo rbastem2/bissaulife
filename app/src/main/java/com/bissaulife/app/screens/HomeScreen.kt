@@ -48,6 +48,7 @@ fun HomeScreen(
     onAbrirCadastroNegocio: () -> Unit,
     onAbrirAdmin: () -> Unit,
     onAbrirGuiaTurista: () -> Unit,
+    onAbrirVerificarEmail: () -> Unit,
     onLogout: () -> Unit
 ) {
     var abaAtual by remember { mutableIntStateOf(0) }
@@ -56,6 +57,7 @@ fun HomeScreen(
     var versaoAuth by remember { mutableIntStateOf(0) }
     val estaLogado = authRepo.estaLogado
     val emailUsuario = authRepo.emailUsuario()
+    val emailVerificado = authRepo.emailVerificado()
     versaoAuth
 
     Scaffold(
@@ -131,6 +133,7 @@ fun HomeScreen(
                 3 -> PerfilScreen(
                     estaLogado = estaLogado,
                     emailUsuario = emailUsuario,
+                    emailVerificado = emailVerificado,
                     onAbrirPlanos = onAbrirPlanos,
                     onAbrirIdiomas = onAbrirIdiomas,
                     onAbrirSobre = onAbrirSobre,
@@ -138,6 +141,7 @@ fun HomeScreen(
                     onAbrirLogin = onAbrirLogin,
                     onAbrirCadastroNegocio = onAbrirCadastroNegocio,
                     onAbrirAdmin = onAbrirAdmin,
+                    onAbrirVerificarEmail = onAbrirVerificarEmail,
                     onLogout = {
                         authRepo.logout()
                         versaoAuth++

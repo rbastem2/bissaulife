@@ -38,7 +38,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     onVoltar: () -> Unit,
-    onLoginSucesso: () -> Unit
+    onLoginSucesso: () -> Unit,
+    onEsqueciSenha: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val authRepo = remember { AuthRepository() }
@@ -108,7 +109,6 @@ fun LoginScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "BissauLife",
@@ -182,8 +182,26 @@ fun LoginScreen(
                 singleLine = true
             )
 
+            // Botao "Esqueci minha senha" - so aparece no modo login
+            if (!modoCadastro) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = onEsqueciSenha) {
+                        Text(
+                            "Esqueci minha senha",
+                            fontSize = 13.sp,
+                            color = BissauGreen,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                }
+            }
+
             if (erro.isNotEmpty()) {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(8.dp))
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = Color(0xFFFFEBEE),
@@ -198,7 +216,7 @@ fun LoginScreen(
                 }
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(20.dp))
 
             Button(
                 onClick = { executar() },

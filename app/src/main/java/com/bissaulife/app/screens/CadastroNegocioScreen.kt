@@ -3,19 +3,23 @@ package com.bissaulife.app.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bissaulife.app.data.AuthRepository
@@ -28,13 +32,47 @@ import kotlinx.coroutines.launch
 @Composable
 fun CadastroNegocioScreen(
     onVoltar: () -> Unit,
-    onSucesso: () -> Unit
+    onSucesso: () -> Unit,
+    onVerificarEmail: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val authRepo = remember { AuthRepository() }
     val negocioRepo = remember { NegocioRepository() }
 
-    // Formulario
+    // Verifica se email esta verificado
+    var verificando by remember { mutableStateOf(true) }
+    var emailVerificado by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        // Recarrega o usuario para pegar o status atual
+        authRepo.recarregarUsuario()
+        emailVerificado = authRepo.emailVerificado()
+        verificando = false
+    }
+
+    // Se ainda esta verificando
+    if (verificando) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = BissauGreen)
+        }
+        return
+    }
+
+    // Se email NAO verificado, mostra tela de aviso
+    if (!emailVerificado) {
+        TelaEmailNaoVerificado(
+            onVoltar = onVoltar,
+            onVerificarEmail = onVerificarEmail
+        )
+        return
+    }
+
+    // ===== FORMULARIO (resto igual) =====
     var nome by remember { mutableStateOf("") }
     var categoria by remember { mutableStateOf("Gastronomia") }
     var subcategoria by remember { mutableStateOf("") }
@@ -94,7 +132,6 @@ fun CadastroNegocioScreen(
         }
     }
 
-    // Dialog de sucesso
     if (mostrarSucesso) {
         AlertDialog(
             onDismissRequest = { },
@@ -152,7 +189,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(20.dp))
 
-            // NOME
             OutlinedTextField(
                 value = nome,
                 onValueChange = { nome = it; erro = "" },
@@ -164,7 +200,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // CATEGORIA
             ExposedDropdownMenuBox(
                 expanded = menuCategoriaAberto,
                 onExpandedChange = { menuCategoriaAberto = it }
@@ -197,7 +232,6 @@ fun CadastroNegocioScreen(
             }
             Spacer(Modifier.height(12.dp))
 
-            // SUBCATEGORIA
             OutlinedTextField(
                 value = subcategoria,
                 onValueChange = { subcategoria = it; erro = "" },
@@ -209,7 +243,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // DESCRICAO
             OutlinedTextField(
                 value = descricao,
                 onValueChange = { descricao = it; erro = "" },
@@ -222,7 +255,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // TELEFONE
             OutlinedTextField(
                 value = telefone,
                 onValueChange = { telefone = it; erro = "" },
@@ -238,7 +270,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // WHATSAPP
             OutlinedTextField(
                 value = whatsapp,
                 onValueChange = { whatsapp = it },
@@ -254,7 +285,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // ENDERECO
             OutlinedTextField(
                 value = endereco,
                 onValueChange = { endereco = it; erro = "" },
@@ -266,7 +296,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // PRECO
             OutlinedTextField(
                 value = preco,
                 onValueChange = { preco = it },
@@ -279,7 +308,6 @@ fun CadastroNegocioScreen(
             )
             Spacer(Modifier.height(12.dp))
 
-            // IMAGEM URL
             OutlinedTextField(
                 value = imagemUrl,
                 onValueChange = { imagemUrl = it },
@@ -319,7 +347,6 @@ fun CadastroNegocioScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // BOTAO ENVIAR
             Button(
                 onClick = { enviar() },
                 modifier = Modifier
@@ -353,6 +380,96 @@ fun CadastroNegocioScreen(
             )
 
             Spacer(Modifier.height(30.dp))
+        }
+    }
+}
+
+@Composable
+fun TelaEmailNaoVerificado(
+    onVoltar: () -> Unit,
+    onVerificarEmail: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text("Anunciar negocio", fontWeight = FontWeight.Bold, fontSize = 19.sp)
+                },
+                navigationIcon = {
+                    IconButton(onClick = onVoltar) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = Color.Black
+                )
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(Color(0xFFF5F5F5))
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFFFFF3E0)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Filled.Email,
+                    contentDescription = null,
+                    tint = Color(0xFFFF9800),
+                    modifier = Modifier.size(60.dp)
+                )
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            Text(
+                "Confirme seu email primeiro",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            Text(
+                "Para anunciar seu negocio, voce precisa confirmar seu email. " +
+                "Isso garante a seguranca de todos os lojistas e clientes.",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            Button(
+                onClick = onVerificarEmail,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(54.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
+                shape = RoundedCornerShape(27.dp)
+            ) {
+                Icon(Icons.Filled.Email, null, tint = Color.White, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    "Verificar meu email",
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }
