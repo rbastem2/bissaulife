@@ -3,8 +3,6 @@ package com.bissaulife.app.screens
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -23,8 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private const val WHATSAPP_COMERCIAL = "245955572393"
-
 // Dados bancarios
 private const val BANCO_NOME = "Banque Atlantique"
 private const val BANCO_TITULAR = "Bastem Sonino Mbumbe"
@@ -35,15 +31,6 @@ private const val BANCO_IBAN = "GW19 5010 0120 0826 4001 744"
 fun BotaoDoacao() {
     val context = LocalContext.current
     var mostrarModalBanco by remember { mutableStateOf(false) }
-
-    fun abrirWhatsAppDoacao() {
-        val mensagem = "Ola! Quero apoiar o projeto BissauLife com uma doacao via Orange Money. Como faco?"
-        val url = "https://wa.me/$WHATSAPP_COMERCIAL?text=${Uri.encode(mensagem)}"
-        try {
-            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-        } catch (e: Exception) {
-        }
-    }
 
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -85,39 +72,19 @@ fun BotaoDoacao() {
 
                 Spacer(Modifier.height(16.dp))
 
-                // Botao Orange Money (via WhatsApp)
-                Button(
-                    onClick = { abrirWhatsAppDoacao() },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(46.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF6600)),
-                    shape = RoundedCornerShape(23.dp)
-                ) {
-                    Text("📱", fontSize = 18.sp)
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        "Doar via Orange Money",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-
-                Spacer(Modifier.height(10.dp))
-
                 // Botao Transferencia Bancaria
                 Button(
                     onClick = { mostrarModalBanco = true },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(46.dp),
+                        .height(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(23.dp)
+                    shape = RoundedCornerShape(25.dp)
                 ) {
-                    Text("🏦", fontSize = 18.sp)
+                    Text("🏦", fontSize = 20.sp)
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        "Transferencia Bancaria",
+                        "Doar via Transferencia Bancaria",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = Color(0xFF003087)
@@ -165,29 +132,13 @@ fun BotaoDoacao() {
 
                     Spacer(Modifier.height(16.dp))
 
-                    ItemDadoBanco(
-                        titulo = "Banco",
-                        valor = BANCO_NOME,
-                        context = context
-                    )
+                    ItemDadoBanco("Banco", BANCO_NOME, context)
                     Spacer(Modifier.height(10.dp))
-                    ItemDadoBanco(
-                        titulo = "Titular",
-                        valor = BANCO_TITULAR,
-                        context = context
-                    )
+                    ItemDadoBanco("Titular", BANCO_TITULAR, context)
                     Spacer(Modifier.height(10.dp))
-                    ItemDadoBanco(
-                        titulo = "Numero da Conta",
-                        valor = BANCO_CONTA,
-                        context = context
-                    )
+                    ItemDadoBanco("Numero da Conta", BANCO_CONTA, context)
                     Spacer(Modifier.height(10.dp))
-                    ItemDadoBanco(
-                        titulo = "IBAN",
-                        valor = BANCO_IBAN,
-                        context = context
-                    )
+                    ItemDadoBanco("IBAN", BANCO_IBAN, context)
 
                     Spacer(Modifier.height(16.dp))
 
@@ -218,11 +169,7 @@ fun BotaoDoacao() {
 }
 
 @Composable
-fun ItemDadoBanco(
-    titulo: String,
-    valor: String,
-    context: Context
-) {
+fun ItemDadoBanco(titulo: String, valor: String, context: Context) {
     var copiado by remember { mutableStateOf(false) }
 
     Surface(
@@ -238,39 +185,19 @@ fun ItemDadoBanco(
             }
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                titulo,
-                fontSize = 11.sp,
-                color = Color.Gray,
-                fontWeight = FontWeight.SemiBold
-            )
+            Text(titulo, fontSize = 11.sp, color = Color.Gray, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(3.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    valor,
-                    fontSize = 13.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.weight(1f)
-                )
+                Text(valor, fontSize = 13.sp, color = Color.Black, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
                 if (copiado) {
-                    Text(
-                        "✓",
-                        fontSize = 14.sp,
-                        color = Color(0xFF4CAF50),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("✓", fontSize = 14.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 } else {
-                    Text(
-                        "📋",
-                        fontSize = 14.sp
-                    )
+                    Text("📋", fontSize = 14.sp)
                 }
             }
         }
     }
 
-    // Reseta o "copiado" depois de 2 segundos
     LaunchedEffect(copiado) {
         if (copiado) {
             kotlinx.coroutines.delay(2000)

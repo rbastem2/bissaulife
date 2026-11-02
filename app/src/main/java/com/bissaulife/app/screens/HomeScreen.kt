@@ -171,6 +171,11 @@ fun ConteudoInicio(
         BannerGuiaTurista(onClick = onAbrirGuiaTurista)
         Spacer(Modifier.height(16.dp))
         BannerDestaque(onClick = { onAbrirCategoria("Gastronomia") })
+        Spacer(Modifier.height(16.dp))
+        
+        // --- ANUNCIO AQUI ---
+        com.bissaulife.app.components.BannerAd()
+        
         Spacer(Modifier.height(24.dp))
     }
 }
