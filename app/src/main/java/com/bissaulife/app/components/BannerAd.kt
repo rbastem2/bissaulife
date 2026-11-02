@@ -19,7 +19,7 @@ import com.google.android.gms.ads.AdView
 @Composable
 fun BannerAd(modifier: Modifier = Modifier) {
     // ID DE TESTE DO GOOGLE (Trocar depois pelo seu real)
-    val adUnitId = "ca-app-pub-3940256099942544/6300978111"
+    val adUnitId = "ca-app-pub-6316829094801811/5833420682"
 
     Box(
         modifier = modifier
