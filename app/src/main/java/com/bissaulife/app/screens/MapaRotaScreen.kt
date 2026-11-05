@@ -23,8 +23,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.cachemanager.CacheManager
 import org.osmdroid.util.BoundingBox
@@ -66,7 +64,6 @@ fun MapaRotaScreen(
     LaunchedEffect(hasPermission) {
         if (hasPermission) {
             val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-            // Força a atualização do GPS em vez de pegar o último salvo
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location: Location? ->
                     carregandoGps = false
@@ -151,12 +148,10 @@ fun MapaRotaScreen(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                // Botão Flutuante para Baixar Mapa Offline
                 FloatingActionButton(
                     onClick = {
                         val map = mapViewRef ?: return@FloatingActionButton
                         baixandoMapa = true
-                        // Baixa uma área de aprox. 10x10km ao redor de Bissau
                         val bb = BoundingBox(12.0, -15.7, 11.7, -15.5) 
                         val cacheManager = CacheManager(map)
                         cacheManager.downloadAreaAsync(context, bb, 13, 16, object : CacheManager.CacheManagerCallback {
@@ -169,7 +164,7 @@ fun MapaRotaScreen(
                                 Toast.makeText(context, "Erro ao baixar: $errors", Toast.LENGTH_SHORT).show()
                             }
                             override fun updateProgress(progress: Int, currentZoomLevel: Int, zoomMin: Int, zoomMax: Int) {}
-                            override fun onTaskStarted() {}
+                            override fun downloadStarted() {} // <-- CORRIGIDO AQUI
                         })
                     },
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
@@ -201,7 +196,7 @@ fun MapaRotaScreen(
                         Text("Obtendo sinal de GPS...", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
                     } else {
                         Text("Distância aproximada: %.2f km".format(distanciaKm), fontWeight = FontWeight.SemiBold)
-                        Text("(Ative o GPS e o Wi-Fi/Internet para baixar o mapa primeiro)", fontSize = 10.sp, color = androidx.compose.ui.graphics.Color.Gray, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.padding(top = 4.dp))
+                        Text("(Ative o GPS e a internet para baixar o mapa primeiro)", fontSize = 10.sp, color = androidx.compose.ui.graphics.Color.Gray, textAlign = androidx.compose.ui.text.style.TextAlign.Center, modifier = Modifier.padding(top = 4.dp))
                     }
                 }
             }
