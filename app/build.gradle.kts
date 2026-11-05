@@ -65,6 +65,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("com.google.android.gms:play-services-ads:23.2.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
@@ -74,4 +75,8 @@ dependencies {
 
     // Coroutines para operacoes assincronas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
+}
+
+dependencies {
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
 }
