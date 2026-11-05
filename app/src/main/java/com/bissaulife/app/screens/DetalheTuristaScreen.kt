@@ -33,7 +33,7 @@ import com.bissaulife.app.utils.isOnline
 fun DetalheTuristaScreen(
     local: LocalTurista,
     onVoltar: () -> Unit,
-    onAbrirMapaOffline: (String, String) -> Unit // Novo parâmetro
+    onAbrirMapaOffline: (String, String) -> Unit
 ) {
     val context = LocalContext.current
     val icone = iconePara(local.categoria)
@@ -46,7 +46,6 @@ fun DetalheTuristaScreen(
 
     fun abrirMaps() {
         if (isOnline(context)) {
-            // Se estiver online, abre o Google Maps
             val endereco = local.endereco
             try {
                 val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
@@ -63,7 +62,6 @@ fun DetalheTuristaScreen(
                 }
             }
         } else {
-            // Se estiver offline, abre o mapa interno
             Toast.makeText(context, "Voce esta offline. Abrindo mapa offline...", Toast.LENGTH_SHORT).show()
             onAbrirMapaOffline(local.nome, local.endereco)
         }
@@ -144,22 +142,5 @@ fun DetalheTuristaScreen(
                 }
             }
         }
-    }
-}
-
-fun iconePara(categoria: String): String {
-    return when (categoria) {
-        "Hospitais" -> "🏥"
-        "Embaixadas" -> "🌍"
-        "Ministerios" -> "🏛️"
-        "Futebol" -> "⚽"
-        "Farmacias" -> "💊"
-        "Discotecas" -> "🎉"
-        "Supermercados" -> "🛒"
-        "Feiras" -> "🛍️"
-        "Combustivel" -> "⛽"
-        "Bancos e Cambio" -> "🏦"
-        "Pontos Turisticos" -> "📸"
-        else -> "📍"
     }
 }
