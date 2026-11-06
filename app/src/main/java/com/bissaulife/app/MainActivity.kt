@@ -74,6 +74,16 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        composable("mapa_offline/{nome}/{endereco}") { backStackEntry ->
+                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
+                            val endereco = backStackEntry.arguments?.getString("endereco") ?: ""
+                            MapaRotaScreen(
+                                nomeDestino = Uri.decode(nome),
+                                enderecoDestino = Uri.decode(endereco),
+                                onVoltar = { navController.popBackStack() }
+                            )
+                        }
+
                         composable("definicoes") {
                             DefinicoesScreen(
                                 onVoltar = { navController.popBackStack() },
@@ -82,8 +92,80 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // ... (O resto das rotas continua igual, vou omitir para o bloco não ficar gigante, mas no seu arquivo original elas devem permanecer) ...
-                        // Para facilitar, copie o resto do seu MainActivity original aqui e cole abaixo da rota "definicoes". 
+                        composable("gastronomia") {
+                            GastronomiaScreen(negociosVM, { navController.popBackStack() }, { r -> navController.navigate("detalhe_restaurante/${r.id}") }, { n -> navController.navigate("detalhe_negocio/${n.id}") })
+                        }
+                        composable("detalhe_restaurante/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val restaurante = Restaurantes.lista.find { it.id == id } ?: Restaurantes.lista.first()
+                            DetalheScreen(restaurante, favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                        }
+
+                        composable("moda") {
+                            ModaScreen(negociosVM, { navController.popBackStack() }, { i -> navController.navigate("detalhe_item_moda/${i.id}") }, { n -> navController.navigate("detalhe_negocio/${n.id}") })
+                        }
+                        composable("detalhe_item_moda/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val item = Moda.lista.find { it.id == id } ?: Moda.lista.first()
+                            DetalheItemScreen(item, "moda", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                        }
+
+                        composable("viagens") {
+                            ViagensScreen(negociosVM, { navController.popBackStack() }, { i -> navController.navigate("detalhe_item_viagem/${i.id}") }, { n -> navController.navigate("detalhe_negocio/${n.id}") })
+                        }
+                        composable("detalhe_item_viagem/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val item = Viagens.lista.find { it.id == id } ?: Viagens.lista.first()
+                            DetalheItemScreen(item, "viagem", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                        }
+
+                        composable("beleza") {
+                            BelezaScreen(negociosVM, { navController.popBackStack() }, { i -> navController.navigate("detalhe_item_beleza/${i.id}") }, { n -> navController.navigate("detalhe_negocio/${n.id}") })
+                        }
+                        composable("detalhe_item_beleza/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val item = Beleza.lista.find { it.id == id } ?: Beleza.lista.first()
+                            DetalheItemScreen(item, "beleza", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                        }
+
+                        composable("detalhe_negocio/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id") ?: ""
+                            val negocio = negociosVM.aprovados.find { it.id == id }
+                            if (negocio != null) {
+                                val cor = when (negocio.categoria.lowercase()) {
+                                    "gastronomia" -> BissauOrange; "moda" -> BissauPurple; "viagens" -> BissauBlue; "beleza" -> BissauPink; else -> BissauGreen
+                                }
+                                DetalheNegocioScreen(negocio, cor, { navController.popBackStack() })
+                            } else {
+                                LaunchedEffect(Unit) { navController.popBackStack() }
+                            }
+                        }
+
+                        composable("guia_turista") {
+                            GuiaTuristaScreen({ navController.popBackStack() }, { cat -> navController.navigate("lista_turista/$cat") })
+                        }
+                        composable("lista_turista/{categoria}") { backStackEntry ->
+                            val cat = backStackEntry.arguments?.getString("categoria") ?: ""
+                            ListaTuristaScreen(cat, { navController.popBackStack() }, { local -> navController.navigate("detalhe_turista/${local.id}") })
+                        }
+                        composable("detalhe_turista/{id}") { backStackEntry ->
+                            val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
+                            val local = LocaisTurista.lista.find { it.id == id }
+                            if (local != null) {
+                                DetalheTuristaScreen(local, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                            } else {
+                                LaunchedEffect(Unit) { navController.popBackStack() }
+                            }
+                        }
+
+                        composable("planos") { PlanosScreen({ navController.popBackStack() }) }
+                        composable("idiomas") { IdiomasScreen({ navController.popBackStack() }) }
+                        composable("sobre") { SobreScreen({ navController.popBackStack() }) }
+                        composable("login") { LoginScreen({ navController.popBackStack() }, { versaoRecomposicao++; navController.popBackStack() }, { navController.navigate("esqueci_senha") }) }
+                        composable("esqueci_senha") { EsqueciSenhaScreen({ navController.popBackStack() }) }
+                        composable("cadastro_negocio") { CadastroNegocioScreen({ navController.popBackStack() }, { navController.popBackStack() }, { navController.navigate("verificar_email") }) }
+                        composable("admin") { AdminScreen({ navController.popBackStack() }) }
+                        composable("verificar_email") { VerificarEmailScreen({ versaoRecomposicao++; navController.popBackStack() }) }
                     }
                 }
             }
