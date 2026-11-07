@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val prefs = getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE)
         
-        // CONFIGURAÇÃO SEGURA DO MAPA (Evita o crash de permissão)
+        // CONFIGURAÇÃO SEGURA DO MAPA
         val osmConfig = org.osmdroid.config.Configuration.getInstance()
         osmConfig.load(this, getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
         osmConfig.osmdroidBasePath = File(cacheDir, "osmdroid")
@@ -81,6 +81,15 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        composable("download_mapa") {
+                            DownloadMapScreen(
+                                onVoltar = { navController.popBackStack() },
+                                onDownloadConcluido = {
+                                    prefs.edit().putBoolean("mapa_baixado", true).apply()
+                                }
+                            )
+                        }
+
                         composable("mapa_offline/{nome}/{endereco}") { backStackEntry ->
                             val nome = backStackEntry.arguments?.getString("nome") ?: ""
                             val endereco = backStackEntry.arguments?.getString("endereco") ?: ""
@@ -95,7 +104,8 @@ class MainActivity : ComponentActivity() {
                             DefinicoesScreen(
                                 onVoltar = { navController.popBackStack() },
                                 isDarkMode = isDarkMode,
-                                onToggleDarkMode = onToggleDarkMode
+                                onToggleDarkMode = onToggleDarkMode,
+                                onAbrirDownloadMapa = { navController.navigate("download_mapa") }
                             )
                         }
 
