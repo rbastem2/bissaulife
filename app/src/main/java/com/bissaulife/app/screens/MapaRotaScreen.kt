@@ -44,7 +44,6 @@ fun MapaRotaScreen(
     var carregandoGps by remember { mutableStateOf(true) }
     var baixandoMapa by remember { mutableStateOf(false) }
     
-    // Coordenadas fictícias apenas para o mapa abrir em Bissau
     val destinoPoint = GeoPoint(11.8636, -15.5977)
 
     var hasPermission by remember {
@@ -67,11 +66,7 @@ fun MapaRotaScreen(
             fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
                 .addOnSuccessListener { location: Location? ->
                     carregandoGps = false
-                    if (location != null) {
-                        userLocation = GeoPoint(location.latitude, location.longitude)
-                    } else {
-                        userLocation = GeoPoint(11.8636, -15.5977) // Fallback
-                    }
+                    userLocation = if (location != null) GeoPoint(location.latitude, location.longitude) else GeoPoint(11.8636, -15.5977)
                 }
                 .addOnFailureListener {
                     carregandoGps = false
@@ -164,7 +159,8 @@ fun MapaRotaScreen(
                                 Toast.makeText(context, "Erro ao baixar: $errors", Toast.LENGTH_SHORT).show()
                             }
                             override fun updateProgress(progress: Int, currentZoomLevel: Int, zoomMin: Int, zoomMax: Int) {}
-                            override fun downloadStarted() {} // <-- CORRIGIDO AQUI
+                            override fun downloadStarted() {}
+                            override fun setPossibleTilesInArea(p0: Int) {} // <-- CORRIGIDO AQUI
                         })
                     },
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
