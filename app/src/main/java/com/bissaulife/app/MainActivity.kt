@@ -14,11 +14,18 @@ import com.bissaulife.app.data.*
 import com.bissaulife.app.screens.*
 import com.bissaulife.app.theme.*
 import kotlinx.coroutines.delay
+import java.io.File
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val prefs = getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE)
+        
+        // CONFIGURAÇÃO SEGURA DO MAPA (Evita o crash de permissão)
+        val osmConfig = org.osmdroid.config.Configuration.getInstance()
+        osmConfig.load(this, getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
+        osmConfig.osmdroidBasePath = File(cacheDir, "osmdroid")
+        osmConfig.osmdroidTileCache = File(osmConfig.osmdroidBasePath, "tiles")
         
         setContent {
             var isDarkMode by remember { mutableStateOf(prefs.getBoolean("dark_mode", false)) }
@@ -135,7 +142,7 @@ class MainActivity : ComponentActivity() {
                                 val cor = when (negocio.categoria.lowercase()) {
                                     "gastronomia" -> BissauOrange; "moda" -> BissauPurple; "viagens" -> BissauBlue; "beleza" -> BissauPink; else -> BissauGreen
                                 }
-                                DetalheNegocioScreen(negocio, cor, { navController.popBackStack() })
+                                DetalheNegocioScreen(negocio, cor, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
                             } else {
                                 LaunchedEffect(Unit) { navController.popBackStack() }
                             }

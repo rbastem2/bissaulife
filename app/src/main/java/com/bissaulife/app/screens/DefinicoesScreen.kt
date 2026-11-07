@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.bissaulife.app.theme.BissauGreen
-import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.cachemanager.CacheManager
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 
 private const val URL_ATUALIZAR = "https://apkpure.com/p/com.bissaulife.app"
@@ -43,11 +43,89 @@ fun DefinicoesScreen(
     val prefs = remember { context.getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE) }
     
     var notificacoesAtivas by remember { mutableStateOf(true) }
-    var baixandoMapa by remember { mutableStateOf(false) }
     var mapaBaixado by remember { mutableStateOf(prefs.getBoolean("mapa_baixado", false)) }
+    
+    // Estados do Modal
+    var mostrarModalDownload by remember { mutableStateOf(false) }
+    var baixandoMapa by remember { mutableStateOf(false) }
 
     fun abrirLink(url: String) {
         try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) {}
+    }
+
+    // MODAL DE DOWNLOAD (Resolve o crash)
+    if (mostrarModalDownload) {
+        AlertDialog(
+            onDismissRequest = { if (!baixandoMapa) mostrarModalDownload = false },
+            title = { Text("Baixando Mapa de Bissau") },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        "Aguarde enquanto preparamos o mapa para uso offline. Nao feche o aplicativo.",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    
+                    // Mapa visível dentro do modal (200x200)
+                    Box(modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))) {
+                        var mapViewRef by remember { mutableStateOf<MapView?>(null) }
+                        AndroidView(
+                            factory = { ctx ->
+                                MapView(ctx).apply {
+                                    setTileSource(TileSourceFactory.MAPNIK)
+                                    setMultiTouchControls(false)
+                                    controller.setZoom(13.0)
+                                    controller.setCenter(GeoPoint(11.8636, -15.5977))
+                                    mapViewRef = this
+                                }
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        
+                        if (baixandoMapa) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center),
+                                color = BissauGreen,
+                                strokeWidth = 4.dp
+                            )
+                        }
+
+                        // Dispara o download apenas UMA vez
+                        LaunchedEffect(mapViewRef) {
+                            val map = mapViewRef ?: return@LaunchedEffect
+                            if (baixandoMapa) {
+                                val bb = BoundingBox(12.0, -15.7, 11.7, -15.5)
+                                val cacheManager = CacheManager(map)
+                                cacheManager.downloadAreaAsync(context, bb, 13, 16, object : CacheManager.CacheManagerCallback {
+                                    override fun onTaskComplete() {
+                                        baixandoMapa = false
+                                        mapaBaixado = true
+                                        prefs.edit().putBoolean("mapa_baixado", true).apply()
+                                        mostrarModalDownload = false
+                                        Toast.makeText(context, "Mapa baixado com sucesso!", Toast.LENGTH_LONG).show()
+                                    }
+                                    override fun onTaskFailed(errors: Int) {
+                                        baixandoMapa = false
+                                        mostrarModalDownload = false
+                                        Toast.makeText(context, "Erro ao baixar o mapa. Verifique sua internet.", Toast.LENGTH_LONG).show()
+                                    }
+                                    override fun updateProgress(progress: Int, currentZoomLevel: Int, zoomMin: Int, zoomMax: Int) {}
+                                    override fun downloadStarted() {}
+                                    override fun setPossibleTilesInArea(p0: Int) {}
+                                })
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                if (!baixandoMapa) {
+                    TextButton(onClick = { mostrarModalDownload = false }) { Text("Fechar") }
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -69,7 +147,7 @@ fun DefinicoesScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            // NOTIFICACOES E MODO ESCURO
+            // PREFERENCIAS
             Text("Preferências", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column {
@@ -91,11 +169,7 @@ fun DefinicoesScreen(
                             Text("Modo escuro", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface)
                             Text("Alterar tema do aplicativo", fontSize = 12.sp, color = Color.Gray)
                         }
-                        Switch(
-                            checked = isDarkMode,
-                            onCheckedChange = { onToggleDarkMode(it) },
-                            colors = SwitchDefaults.colors(checkedThumbColor = BissauGreen, checkedTrackColor = BissauGreen.copy(alpha = 0.5f))
-                        )
+                        Switch(checked = isDarkMode, onCheckedChange = { onToggleDarkMode(it) }, colors = SwitchDefaults.colors(checkedThumbColor = BissauGreen, checkedTrackColor = BissauGreen.copy(alpha = 0.5f)))
                     }
                 }
             }
@@ -114,66 +188,28 @@ fun DefinicoesScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     
-                    // View invisível do mapa para permitir o download
-                    AndroidView(
-                        factory = { ctx ->
-                            Configuration.getInstance().userAgentValue = ctx.packageName
-                            MapView(ctx).apply {
-                                setTileSource(TileSourceFactory.MAPNIK)
-                                // Tamanho 0 para não aparecer na tela
-                                layoutParams = android.view.ViewGroup.LayoutParams(0, 0)
-                            }
-                        },
-                        update = { mapView ->
-                            // Lógica de download
-                            if (baixandoMapa) {
-                                val bb = BoundingBox(12.0, -15.7, 11.7, -15.5) // Área de Bissau
-                                val cacheManager = CacheManager(mapView)
-                                cacheManager.downloadAreaAsync(context, bb, 13, 16, object : CacheManager.CacheManagerCallback {
-                                    override fun onTaskComplete() {
-                                        baixandoMapa = false
-                                        mapaBaixado = true
-                                        prefs.edit().putBoolean("mapa_baixado", true).apply()
-                                        Toast.makeText(context, "Mapa de Bissau baixado com sucesso!", Toast.LENGTH_LONG).show()
-                                    }
-                                    override fun onTaskFailed(errors: Int) {
-                                        baixandoMapa = false
-                                        Toast.makeText(context, "Erro ao baixar o mapa. Verifique sua internet.", Toast.LENGTH_LONG).show()
-                                    }
-                                    override fun updateProgress(progress: Int, currentZoomLevel: Int, zoomMin: Int, zoomMax: Int) {}
-                                    override fun downloadStarted() {}
-                                    override fun setPossibleTilesInArea(p0: Int) {}
-                                })
-                            }
-                        }
-                    )
-
                     Button(
-                        onClick = { baixandoMapa = true },
+                        onClick = { 
+                            baixandoMapa = true
+                            mostrarModalDownload = true 
+                        },
                         modifier = Modifier.fillMaxWidth().height(50.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = if (mapaBaixado) Color(0xFF607D8B) else BissauGreen
                         ),
-                        shape = RoundedCornerShape(25.dp),
-                        enabled = !baixandoMapa
+                        shape = RoundedCornerShape(25.dp)
                     ) {
-                        if (baixandoMapa) {
-                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                            Spacer(Modifier.width(8.dp))
-                            Text("Baixando mapa...", fontSize = 14.sp)
-                        } else {
-                            Icon(
-                                imageVector = if (mapaBaixado) Icons.Filled.Refresh else Icons.Filled.Download,
-                                contentDescription = null,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                if (mapaBaixado) "Mapa Baixado (Atualizar)" else "Baixar Mapa de Bissau",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
+                        Icon(
+                            imageVector = if (mapaBaixado) Icons.Filled.Refresh else Icons.Filled.Download,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            if (mapaBaixado) "Mapa Baixado (Atualizar)" else "Baixar Mapa de Bissau",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
