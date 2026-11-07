@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme // <-- IMPORT ADICIONADO AQUI
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,14 +19,14 @@ import com.google.android.gms.ads.AdView
 
 @Composable
 fun BannerAd(modifier: Modifier = Modifier) {
-    // ID DE TESTE DO GOOGLE (Trocar depois pelo seu real)
+    // ID REAL DO ADMOB
     val adUnitId = "ca-app-pub-6316829094801811/5833420682"
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(MaterialTheme.colorScheme.surfaceVariant) // Cor dinâmica para o Dark Mode
             .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
