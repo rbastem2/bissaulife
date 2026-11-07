@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,169 +34,84 @@ import com.bissaulife.app.theme.BissauGreen
 fun DetalheNegocioScreen(
     negocio: Negocio,
     corCategoria: Color,
-    onVoltar: () -> Unit
+    onVoltar: () -> Unit,
+    onAbrirMapaOffline: (String, String) -> Unit
 ) {
     val context = LocalContext.current
+    var mostrarDialogoMapa by remember { mutableStateOf(false) }
 
-    fun abrirTelefone() {
-        val numero = negocio.telefone.replace(" ", "").replace("-", "")
+    fun abrirGoogleMaps() {
         try {
-            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$numero"))
-            context.startActivity(intent)
-        } catch (e: Exception) {
-        }
-    }
-
-    fun abrirMaps() {
-        val endereco = negocio.endereco
-        try {
-            val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
+            val uri = Uri.parse("geo:0,0?q=${Uri.encode(negocio.endereco)}")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             intent.setPackage("com.google.android.apps.maps")
             context.startActivity(intent)
         } catch (e: Exception) {
             try {
-                val uri = Uri.parse("geo:0,0?q=${Uri.encode(endereco)}")
+                val uri = Uri.parse("geo:0,0?q=${Uri.encode(negocio.endereco)}")
                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
             } catch (e2: Exception) {
-                val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(endereco)}")
+                val uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=${Uri.encode(negocio.endereco)}")
                 context.startActivity(Intent(Intent.ACTION_VIEW, uri))
             }
         }
     }
 
+    if (mostrarDialogoMapa) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogoMapa = false },
+            title = { Text("Como deseja navegar?") },
+            text = { Text("Se estiver com internet, use o Google Maps. Se quiser baixar o mapa para usar sem internet, escolha o Mapa Offline.") },
+            confirmButton = {
+                TextButton(onClick = { mostrarDialogoMapa = false; onAbrirMapaOffline(negocio.nome, negocio.endereco) }) {
+                    Text("Mapa Offline", color = BissauGreen, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogoMapa = false; abrirGoogleMaps() }) {
+                    Text("Google Maps", color = Color.Gray)
+                }
+            }
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .verticalScroll(rememberScrollState())
-        ) {
-            // Topo com imagem ou gradiente
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(280.dp)
-            ) {
+        Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).verticalScroll(rememberScrollState())) {
+            Box(modifier = Modifier.fillMaxWidth().height(280.dp)) {
                 if (negocio.imagemUrl.isNotBlank()) {
-                    AsyncImage(
-                        model = negocio.imagemUrl,
-                        contentDescription = negocio.nome,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Black.copy(alpha = 0.4f),
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = 0.3f)
-                                    )
-                                )
-                            )
-                    )
+                    AsyncImage(model = negocio.imagemUrl, contentDescription = negocio.nome, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(Color.Black.copy(alpha = 0.4f), Color.Transparent, Color.Black.copy(alpha = 0.3f)))))
                 } else {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(corCategoria, corCategoria.copy(alpha = 0.6f))
-                                )
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(colors = listOf(corCategoria, corCategoria.copy(alpha = 0.6f)))), contentAlignment = Alignment.Center) {
                         Text("🏪", fontSize = 100.sp)
                     }
                 }
             }
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                // Selo NOVO
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = corCategoria
-                ) {
-                    Text(
-                        "NOVO • ADICIONADO RECENTEMENTE",
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                        fontSize = 10.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+            Column(modifier = Modifier.fillMaxWidth().padding(20.dp)) {
+                Surface(shape = RoundedCornerShape(8.dp), color = corCategoria) {
+                    Text("NOVO • ADICIONADO RECENTEMENTE", modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp), fontSize = 10.sp, color = Color.White, fontWeight = FontWeight.Bold)
                 }
-
                 Spacer(Modifier.height(10.dp))
-
-                Text(
-                    negocio.nome,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                )
-
+                Text(negocio.nome, fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                 Spacer(Modifier.height(8.dp))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Filled.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFFFC107),
-                        modifier = Modifier.size(18.dp)
-                    )
+                    Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(18.dp))
                     Spacer(Modifier.width(4.dp))
-                    Text(
-                        "5.0",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        color = Color(0xFFFF9800)
-                    )
+                    Text("5.0", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color(0xFFFF9800))
                     Spacer(Modifier.width(4.dp))
-                    Text(
-                        "(Novo no app)",
-                        fontSize = 13.sp,
-                        color = Color.Gray
-                    )
+                    Text("(Novo no app)", fontSize = 13.sp, color = Color.Gray)
                 }
-
                 Spacer(Modifier.height(8.dp))
-
-                Text(
-                    "${negocio.categoria} • ${negocio.subcategoria}",
-                    fontSize = 13.sp,
-                    color = corCategoria,
-                    fontWeight = FontWeight.SemiBold
-                )
-
+                Text("${negocio.categoria} • ${negocio.subcategoria}", fontSize = 13.sp, color = corCategoria, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(20.dp))
 
                 if (negocio.preco.isNotBlank()) {
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = corCategoria.copy(alpha = 0.1f)),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = corCategoria.copy(alpha = 0.1f)), modifier = Modifier.fillMaxWidth()) {
+                        Row(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                             Column(modifier = Modifier.weight(1f)) {
-                                Text("Preco medio", fontSize = 12.sp, color = Color.Gray)
-                                Text(
-                                    negocio.preco,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = corCategoria
-                                )
+                                Text("Preço médio", fontSize = 12.sp, color = Color.Gray)
+                                Text(negocio.preco, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = corCategoria)
                             }
                             Text("💰", fontSize = 32.sp)
                         }
@@ -205,28 +120,23 @@ fun DetalheNegocioScreen(
                 }
 
                 if (negocio.descricao.isNotBlank()) {
-                    Text("Sobre", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text("Sobre", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(Modifier.height(8.dp))
-                    Text(
-                        negocio.descricao,
-                        fontSize = 14.sp,
-                        color = Color(0xFF444444),
-                        lineHeight = 20.sp
-                    )
+                    Text(negocio.descricao, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f), lineHeight = 20.sp)
                     Spacer(Modifier.height(20.dp))
                 }
 
                 if (negocio.telefone.isNotBlank()) {
-                    Text("Telefone", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text("Telefone", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(Modifier.height(8.dp))
-                    Text(negocio.telefone, fontSize = 14.sp, color = Color(0xFF444444))
+                    Text(negocio.telefone, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f))
                     Spacer(Modifier.height(20.dp))
                 }
 
                 if (negocio.endereco.isNotBlank()) {
-                    Text("Endereco", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+                    Text("Endereço", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground)
                     Spacer(Modifier.height(8.dp))
-                    Text(negocio.endereco, fontSize = 14.sp, color = Color(0xFF444444))
+                    Text(negocio.endereco, fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f))
                     Spacer(Modifier.height(20.dp))
                 }
 
@@ -234,48 +144,18 @@ fun DetalheNegocioScreen(
             }
         }
 
-        // Botao voltar
-        IconButton(
-            onClick = onVoltar,
-            modifier = Modifier
-                .padding(16.dp)
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(Color.White.copy(alpha = 0.9f))
-                .align(Alignment.TopStart)
-        ) {
+        IconButton(onClick = onVoltar, modifier = Modifier.padding(16.dp).size(44.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.9f)).align(Alignment.TopStart)) {
             Icon(Icons.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.Black)
         }
 
-        // Botoes inferiores
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Button(
-                    onClick = { abrirTelefone() },
-                    modifier = Modifier.weight(1f).height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = BissauGreen),
-                    shape = RoundedCornerShape(28.dp)
-                ) {
+        Box(modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(16.dp)) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Button(onClick = { try { context.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:${negocio.telefone}"))) } catch (e: Exception) {} }, modifier = Modifier.weight(1f).height(56.dp), colors = ButtonDefaults.buttonColors(containerColor = BissauGreen), shape = RoundedCornerShape(28.dp)) {
                     Icon(Icons.Filled.Phone, null, tint = Color.White, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(6.dp))
                     Text("Ligar", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                 }
-
-                Button(
-                    onClick = { abrirMaps() },
-                    modifier = Modifier.weight(1f).height(56.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
-                    shape = RoundedCornerShape(28.dp)
-                ) {
+                Button(onClick = { mostrarDialogoMapa = true }, modifier = Modifier.weight(1f).height(56.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)), shape = RoundedCornerShape(28.dp)) {
                     Icon(Icons.Filled.LocationOn, null, tint = Color.White, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(4.dp))
                     Text("Como chegar", fontSize = 13.sp, fontWeight = FontWeight.SemiBold)

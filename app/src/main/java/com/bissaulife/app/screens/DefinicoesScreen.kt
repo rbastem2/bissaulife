@@ -16,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip // <-- IMPORT ADICIONADO AQUI
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +46,6 @@ fun DefinicoesScreen(
     var notificacoesAtivas by remember { mutableStateOf(true) }
     var mapaBaixado by remember { mutableStateOf(prefs.getBoolean("mapa_baixado", false)) }
     
-    // Estados do Modal
     var mostrarModalDownload by remember { mutableStateOf(false) }
     var baixandoMapa by remember { mutableStateOf(false) }
 
@@ -53,7 +53,6 @@ fun DefinicoesScreen(
         try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) {}
     }
 
-    // MODAL DE DOWNLOAD (Resolve o crash)
     if (mostrarModalDownload) {
         AlertDialog(
             onDismissRequest = { if (!baixandoMapa) mostrarModalDownload = false },
@@ -68,7 +67,6 @@ fun DefinicoesScreen(
                     )
                     Spacer(Modifier.height(16.dp))
                     
-                    // Mapa visível dentro do modal (200x200)
                     Box(modifier = Modifier.size(200.dp).clip(RoundedCornerShape(12.dp))) {
                         var mapViewRef by remember { mutableStateOf<MapView?>(null) }
                         AndroidView(
@@ -92,7 +90,6 @@ fun DefinicoesScreen(
                             )
                         }
 
-                        // Dispara o download apenas UMA vez
                         LaunchedEffect(mapViewRef) {
                             val map = mapViewRef ?: return@LaunchedEffect
                             if (baixandoMapa) {
@@ -147,7 +144,6 @@ fun DefinicoesScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            // PREFERENCIAS
             Text("Preferências", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column {
@@ -176,7 +172,6 @@ fun DefinicoesScreen(
 
             Spacer(Modifier.height(18.dp))
 
-            // MAPA OFFLINE
             Text("Mapa Offline", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.padding(16.dp)) {
@@ -216,7 +211,6 @@ fun DefinicoesScreen(
 
             Spacer(Modifier.height(18.dp))
 
-            // PRIVACIDADE
             Text("Privacidade e segurança", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column {
@@ -228,7 +222,6 @@ fun DefinicoesScreen(
 
             Spacer(Modifier.height(18.dp))
 
-            // ATUALIZACOES
             Text("Atualizações", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column {
