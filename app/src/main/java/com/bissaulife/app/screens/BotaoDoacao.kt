@@ -72,7 +72,7 @@ fun BotaoDoacao() {
 
                 Spacer(Modifier.height(16.dp))
 
-                // Botao Transferencia Bancaria
+                // Botao de Doacao
                 Button(
                     onClick = { mostrarModalBanco = true },
                     modifier = Modifier
@@ -81,23 +81,15 @@ fun BotaoDoacao() {
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                     shape = RoundedCornerShape(25.dp)
                 ) {
-                    Text("🏦", fontSize = 20.sp)
+                    Text("💰", fontSize = 20.sp)
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        "Doar via Transferencia Bancaria",
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.SemiBold,
+                        "Faca uma doacao",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
                         color = Color(0xFF003087)
                     )
                 }
-
-                Spacer(Modifier.height(12.dp))
-
-                Text(
-                    "Qualquer valor e bem-vindo. Obrigado pelo apoio! 💚",
-                    color = Color.White.copy(alpha = 0.85f),
-                    fontSize = 11.sp
-                )
             }
         }
     }
@@ -126,7 +118,7 @@ fun BotaoDoacao() {
                     Text(
                         "Use os dados abaixo para fazer sua doacao via transferencia:",
                         fontSize = 13.sp,
-                        color = Color(0xFF666666),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 18.sp
                     )
 
@@ -144,7 +136,7 @@ fun BotaoDoacao() {
 
                     Surface(
                         shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFFFFF8E1)
+                        color = MaterialTheme.colorScheme.surfaceVariant
                     ) {
                         Row(modifier = Modifier.padding(12.dp)) {
                             Text("💡", fontSize = 18.sp)
@@ -152,7 +144,7 @@ fun BotaoDoacao() {
                             Text(
                                 "Toque em qualquer dado para copiar.",
                                 fontSize = 12.sp,
-                                color = Color(0xFF795548),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 lineHeight = 16.sp
                             )
                         }
@@ -174,7 +166,7 @@ fun ItemDadoBanco(titulo: String, valor: String, context: Context) {
 
     Surface(
         shape = RoundedCornerShape(10.dp),
-        color = Color(0xFFF5F5F5),
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
@@ -188,7 +180,7 @@ fun ItemDadoBanco(titulo: String, valor: String, context: Context) {
             Text(titulo, fontSize = 11.sp, color = Color.Gray, fontWeight = FontWeight.SemiBold)
             Spacer(Modifier.height(3.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(valor, fontSize = 13.sp, color = Color.Black, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
+                Text(valor, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
                 if (copiado) {
                     Text("✓", fontSize = 14.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.Bold)
                 } else {

@@ -66,7 +66,7 @@ fun FavoritosScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         // Cabecalho
         Box(
@@ -77,7 +77,7 @@ fun FavoritosScreen(
         ) {
             Text(
                 "Favoritos",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -229,7 +229,7 @@ fun CardFavorito(
                     nome,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1
                 )
                 Spacer(Modifier.height(2.dp))

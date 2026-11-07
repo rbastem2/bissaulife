@@ -77,8 +77,8 @@ fun GastronomiaScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -87,7 +87,7 @@ fun GastronomiaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             // BANNER com imagem
             Box(
@@ -109,8 +109,8 @@ fun GastronomiaScreen(
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
-                                    Color.Black.copy(alpha = 0.75f),
-                                    Color.Black.copy(alpha = 0.15f)
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)
                                 )
                             )
                         )
@@ -123,14 +123,14 @@ fun GastronomiaScreen(
                 ) {
                     Text(
                         "Sabores da nossa terra",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
                         "Restaurantes, pratos tipicos e muito mais",
-                        color = Color.White.copy(alpha = 0.95f),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
                         fontSize = 12.sp
                     )
                 }
@@ -154,7 +154,7 @@ fun GastronomiaScreen(
                         Text(
                             filtro,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = if (selecionado) Color.White else Color.Black,
+                            color = if (selecionado) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
                             fontSize = 13.sp,
                             fontWeight = if (selecionado) FontWeight.SemiBold else FontWeight.Normal
                         )
@@ -186,7 +186,7 @@ fun GastronomiaScreen(
                             "Sugestoes da nossa equipe",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
@@ -239,7 +239,7 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         fontSize = 9.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -247,7 +247,7 @@ fun CardNegocio(negocio: Negocio, onClick: () -> Unit) {
                 Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
             }
             Spacer(Modifier.height(4.dp))
-            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
@@ -298,7 +298,7 @@ fun CardRestaurante(restaurante: Restaurante, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(restaurante.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black)
+            Text(restaurante.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(16.dp))

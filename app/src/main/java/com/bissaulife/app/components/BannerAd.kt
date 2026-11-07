@@ -25,7 +25,7 @@ fun BannerAd(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(Color(0xFFF5F5F5))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {

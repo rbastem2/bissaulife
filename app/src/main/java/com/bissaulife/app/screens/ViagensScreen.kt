@@ -70,8 +70,8 @@ fun ViagensScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -80,7 +80,7 @@ fun ViagensScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White),
+                .background(MaterialTheme.colorScheme.surface),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             item {
@@ -104,8 +104,8 @@ fun ViagensScreen(
                             .background(
                                 Brush.horizontalGradient(
                                     colors = listOf(
-                                        Color.Black.copy(alpha = 0.7f),
-                                        Color.Black.copy(alpha = 0.1f)
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
                                     )
                                 )
                             )
@@ -118,14 +118,14 @@ fun ViagensScreen(
                     ) {
                         Text(
                             "Explore a Guine-Bissau",
-                            color = Color.White,
+                            color = MaterialTheme.colorScheme.surface,
                             fontSize = 22.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
                             "Ilhas, cultura, natureza e aventura",
-                            color = Color.White.copy(alpha = 0.95f),
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
                             fontSize = 13.sp
                         )
                     }
@@ -164,7 +164,7 @@ fun ViagensScreen(
                         "Sugestoes da nossa equipe",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
+                        color = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
                     )
                     Spacer(Modifier.height(8.dp))
@@ -182,7 +182,7 @@ fun ViagensScreen(
                         "Destaques",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(Modifier.weight(1f))
                     Text(
@@ -242,7 +242,7 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         fontSize = 9.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -250,7 +250,7 @@ fun ItemViagemNegocio(negocio: Negocio, onClick: () -> Unit) {
                 Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
             }
             Spacer(Modifier.height(4.dp))
-            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(15.dp))
@@ -310,13 +310,13 @@ fun CategoriasViagemRow(selecionada: String, onSelecionar: (String) -> Unit) {
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(cat.icone, null, tint = Color.White, modifier = Modifier.size(28.dp))
+                    Icon(cat.icone, null, tint = MaterialTheme.colorScheme.surface, modifier = Modifier.size(28.dp))
                 }
                 Spacer(Modifier.height(6.dp))
                 Text(
                     cat.nome,
                     fontSize = 11.sp,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = if (selecionada == cat.nome) FontWeight.Bold else FontWeight.Normal
                 )
             }
@@ -346,7 +346,7 @@ fun ItemViagem(item: Item, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(item.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(item.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
             Text("A partir de ${item.preco}", fontSize = 13.sp, color = Color(0xFF666666))
             Spacer(Modifier.height(6.dp))

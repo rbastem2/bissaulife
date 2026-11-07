@@ -137,8 +137,8 @@ fun PlanosScreen(onVoltar: () -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         }
@@ -147,7 +147,7 @@ fun PlanosScreen(onVoltar: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color(0xFFF5F5F5))
+                .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
@@ -191,7 +191,7 @@ fun PlanosScreen(onVoltar: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.background)
                     .padding(4.dp),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -208,7 +208,7 @@ fun PlanosScreen(onVoltar: () -> Unit) {
                     ) {
                         Text(
                             if (periodo == "semestral") "Semestral" else "Anual",
-                            color = if (selecionado) Color.White else Color.Black,
+                            color = if (selecionado) Color.White else MaterialTheme.colorScheme.onBackground,
                             fontSize = 14.sp,
                             fontWeight = if (selecionado) FontWeight.Bold else FontWeight.Normal
                         )
@@ -233,7 +233,7 @@ fun PlanosScreen(onVoltar: () -> Unit) {
                 "Formas de pagamento aceitas",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(top = 8.dp, bottom = 10.dp)
             )
 
@@ -259,7 +259,7 @@ fun PlanosScreen(onVoltar: () -> Unit) {
                         .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("MTN Money", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                    Text("MTN Money", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 13.sp)
                 }
             }
 
@@ -298,7 +298,7 @@ fun CardPlano(
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {

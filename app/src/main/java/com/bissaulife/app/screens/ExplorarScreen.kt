@@ -126,7 +126,7 @@ fun ExplorarScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
     ) {
         // Header
         Box(
@@ -137,7 +137,7 @@ fun ExplorarScreen(
         ) {
             Text(
                 "Explorar",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.surface,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -181,7 +181,7 @@ fun ExplorarScreen(
                     Text(
                         filtro,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        color = if (selecionado) Color.White else Color.Black,
+                        color = if (selecionado) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
                         fontSize = 13.sp,
                         fontWeight = if (selecionado) FontWeight.SemiBold else FontWeight.Normal
                     )
@@ -378,7 +378,7 @@ fun CardResultado(
                     )
                 }
                 Spacer(Modifier.height(4.dp))
-                Text(nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1)
+                Text(nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
                 Spacer(Modifier.height(2.dp))
                 Text(categoria, fontSize = 11.sp, color = Color.Gray, maxLines = 1)
                 Spacer(Modifier.height(4.dp))
@@ -432,7 +432,7 @@ fun CardResultadoTurista(item: LocalTurista, onClick: () -> Unit) {
                     )
                 }
                 Spacer(Modifier.height(4.dp))
-                Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black, maxLines = 1)
+                Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
                 Spacer(Modifier.height(2.dp))
                 Text("📍 ${item.endereco}", fontSize = 11.sp, color = Color.Gray, maxLines = 1)
                 if (item.telefone.isNotBlank()) {

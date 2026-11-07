@@ -73,8 +73,8 @@ fun ModaScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -83,7 +83,7 @@ fun ModaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             // BANNER com imagem
             Box(
@@ -105,8 +105,8 @@ fun ModaScreen(
                         .background(
                             Brush.horizontalGradient(
                                 colors = listOf(
-                                    Color.Black.copy(alpha = 0.75f),
-                                    Color.Black.copy(alpha = 0.15f)
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.75f),
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f)
                                 )
                             )
                         )
@@ -119,14 +119,14 @@ fun ModaScreen(
                 ) {
                     Text(
                         "Estilo em todas as ocasioes",
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(Modifier.height(6.dp))
                     Text(
                         "Roupas, calcados, bolsas e acessorios",
-                        color = Color.White.copy(alpha = 0.95f),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
                         fontSize = 12.sp
                     )
                 }
@@ -150,7 +150,7 @@ fun ModaScreen(
                         Text(
                             filtro,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = if (selecionado) Color.White else Color.Black,
+                            color = if (selecionado) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
                             fontSize = 13.sp,
                             fontWeight = if (selecionado) FontWeight.SemiBold else FontWeight.Normal
                         )
@@ -212,14 +212,14 @@ fun CardNegocioModa(negocio: Negocio, onClick: () -> Unit) {
                     "NOVO",
                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                     fontSize = 9.sp,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
 
         Spacer(Modifier.height(8.dp))
-        Text(negocio.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 1)
+        Text(negocio.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
         Spacer(Modifier.height(3.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(13.dp))
@@ -268,7 +268,7 @@ fun CardProduto(item: Item, onClick: () -> Unit) {
         }
 
         Spacer(Modifier.height(8.dp))
-        Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Black, maxLines = 1)
+        Text(item.nome, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurface, maxLines = 1)
         Spacer(Modifier.height(2.dp))
         Text(item.preco, fontSize = 13.sp, color = Color(0xFF666666))
         Spacer(Modifier.height(6.dp))
@@ -289,7 +289,7 @@ fun CardProduto(item: Item, onClick: () -> Unit) {
                     .background(BissauGreen),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.AddShoppingCart, null, tint = Color.White, modifier = Modifier.size(16.dp))
+                Icon(Icons.Filled.AddShoppingCart, null, tint = MaterialTheme.colorScheme.surface, modifier = Modifier.size(16.dp))
             }
         }
     }

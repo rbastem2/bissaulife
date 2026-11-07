@@ -69,8 +69,8 @@ fun BelezaScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.White,
-                    titleContentColor = Color.Black
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         }
@@ -79,7 +79,7 @@ fun BelezaScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             BannerBeleza()
             Spacer(Modifier.height(12.dp))
@@ -101,7 +101,7 @@ fun BelezaScreen(
                         Text(
                             filtro,
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = if (selecionado) Color.White else Color.Black,
+                            color = if (selecionado) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
                             fontSize = 13.sp,
                             fontWeight = if (selecionado) FontWeight.SemiBold else FontWeight.Normal
                         )
@@ -138,7 +138,7 @@ fun BelezaScreen(
                             "Sugestoes da nossa equipe",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Black,
+                            color = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
@@ -191,7 +191,7 @@ fun CardNegocioBeleza(negocio: Negocio, onClick: () -> Unit) {
                         "NOVO",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         fontSize = 9.sp,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.surface,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -199,7 +199,7 @@ fun CardNegocioBeleza(negocio: Negocio, onClick: () -> Unit) {
                 Text(negocio.subcategoria, fontSize = 11.sp, color = Color.Gray)
             }
             Spacer(Modifier.height(4.dp))
-            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+            Text(negocio.nome, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
 
             // Estrela
@@ -266,9 +266,9 @@ fun BannerBeleza() {
                 .padding(20.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            Text("Cuide-se bem", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("Cuide-se bem", color = MaterialTheme.colorScheme.surface, fontSize = 22.sp, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
-            Text("Saloes, spa, unhas e muito mais", color = Color.White.copy(alpha = 0.95f), fontSize = 13.sp)
+            Text("Saloes, spa, unhas e muito mais", color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f), fontSize = 13.sp)
         }
     }
 }
@@ -293,7 +293,7 @@ fun CardBeleza(item: Item, onClick: () -> Unit) {
         Spacer(Modifier.width(12.dp))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(item.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.Black)
+            Text(item.nome, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface)
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Filled.Star, null, tint = Color(0xFFFFC107), modifier = Modifier.size(16.dp))

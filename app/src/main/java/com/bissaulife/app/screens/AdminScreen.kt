@@ -111,7 +111,7 @@ fun AdminScreen(onVoltar: () -> Unit) {
             )
         }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding).background(Color(0xFFF5F5F5))) {
+        Column(modifier = Modifier.fillMaxSize().padding(padding).background(MaterialTheme.colorScheme.background)) {
             OutlinedTextField(
                 value = query, onValueChange = { query = it },
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
@@ -121,7 +121,7 @@ fun AdminScreen(onVoltar: () -> Unit) {
                 colors = OutlinedTextFieldDefaults.colors(unfocusedContainerColor = Color.White, focusedContainerColor = Color.White)
             )
 
-            TabRow(selectedTabIndex = abaAtual, containerColor = Color.White, contentColor = BissauGreen) {
+            TabRow(selectedTabIndex = abaAtual, containerColor = MaterialTheme.colorScheme.surface, contentColor = BissauGreen) {
                 Tab(selected = abaAtual == 0, onClick = { abaAtual = 0 }, text = { Text("Pend. (${pendentes.size})", fontSize = 11.sp) })
                 Tab(selected = abaAtual == 1, onClick = { abaAtual = 1 }, text = { Text("Aprov. (${aprovados.size})", fontSize = 11.sp) })
                 Tab(selected = abaAtual == 2, onClick = { abaAtual = 2 }, text = { Text("Arq. (${arquivados.size})", fontSize = 11.sp) })
@@ -161,7 +161,7 @@ fun CardAdmin(
     onRestaurar: () -> Unit, onDeletar: () -> Unit, onDestacar: () -> Unit,
     onWhatsApp: () -> Unit, onEditar: () -> Unit
 ) {
-    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = Color.White), modifier = Modifier.fillMaxWidth()) {
+    Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (negocio.destaque) {
@@ -170,7 +170,7 @@ fun CardAdmin(
                     }
                     Spacer(Modifier.width(6.dp))
                 }
-                Text(negocio.nome.ifBlank { "(sem nome)" }, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.Black, modifier = Modifier.weight(1f))
+                Text(negocio.nome.ifBlank { "(sem nome)" }, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
                 IconButton(onClick = onEditar) { Icon(Icons.Filled.Edit, "Editar", tint = BissauGreen) }
             }
             

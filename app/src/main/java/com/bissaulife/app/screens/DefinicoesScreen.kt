@@ -1,7 +1,9 @@
 package com.bissaulife.app.screens
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,7 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.bissaulife.app.theme.BissauGreen
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.cachemanager.CacheManager
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
+import org.osmdroid.views.MapView
 
 private const val URL_ATUALIZAR = "https://apkpure.com/p/com.bissaulife.app"
 
@@ -32,7 +40,11 @@ fun DefinicoesScreen(
     onToggleDarkMode: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE) }
+    
     var notificacoesAtivas by remember { mutableStateOf(true) }
+    var baixandoMapa by remember { mutableStateOf(false) }
+    var mapaBaixado by remember { mutableStateOf(prefs.getBoolean("mapa_baixado", false)) }
 
     fun abrirLink(url: String) {
         try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) {}
@@ -57,8 +69,8 @@ fun DefinicoesScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            // NOTIFICACOES
-            Text("Notificações", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
+            // NOTIFICACOES E MODO ESCURO
+            Text("Preferências", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
             Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
                 Column {
                     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -84,6 +96,84 @@ fun DefinicoesScreen(
                             onCheckedChange = { onToggleDarkMode(it) },
                             colors = SwitchDefaults.colors(checkedThumbColor = BissauGreen, checkedTrackColor = BissauGreen.copy(alpha = 0.5f))
                         )
+                    }
+                }
+            }
+
+            Spacer(Modifier.height(18.dp))
+
+            // MAPA OFFLINE
+            Text("Mapa Offline", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
+            Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        "Baixe o mapa da cidade de Bissau para usar o aplicativo sem precisar de internet. Recomendamos fazer o download conectado ao Wi-Fi.",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        lineHeight = 18.sp
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    
+                    // View invisível do mapa para permitir o download
+                    AndroidView(
+                        factory = { ctx ->
+                            Configuration.getInstance().userAgentValue = ctx.packageName
+                            MapView(ctx).apply {
+                                setTileSource(TileSourceFactory.MAPNIK)
+                                // Tamanho 0 para não aparecer na tela
+                                layoutParams = android.view.ViewGroup.LayoutParams(0, 0)
+                            }
+                        },
+                        update = { mapView ->
+                            // Lógica de download
+                            if (baixandoMapa) {
+                                val bb = BoundingBox(12.0, -15.7, 11.7, -15.5) // Área de Bissau
+                                val cacheManager = CacheManager(mapView)
+                                cacheManager.downloadAreaAsync(context, bb, 13, 16, object : CacheManager.CacheManagerCallback {
+                                    override fun onTaskComplete() {
+                                        baixandoMapa = false
+                                        mapaBaixado = true
+                                        prefs.edit().putBoolean("mapa_baixado", true).apply()
+                                        Toast.makeText(context, "Mapa de Bissau baixado com sucesso!", Toast.LENGTH_LONG).show()
+                                    }
+                                    override fun onTaskFailed(errors: Int) {
+                                        baixandoMapa = false
+                                        Toast.makeText(context, "Erro ao baixar o mapa. Verifique sua internet.", Toast.LENGTH_LONG).show()
+                                    }
+                                    override fun updateProgress(progress: Int, currentZoomLevel: Int, zoomMin: Int, zoomMax: Int) {}
+                                    override fun downloadStarted() {}
+                                    override fun setPossibleTilesInArea(p0: Int) {}
+                                })
+                            }
+                        }
+                    )
+
+                    Button(
+                        onClick = { baixandoMapa = true },
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (mapaBaixado) Color(0xFF607D8B) else BissauGreen
+                        ),
+                        shape = RoundedCornerShape(25.dp),
+                        enabled = !baixandoMapa
+                    ) {
+                        if (baixandoMapa) {
+                            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+                            Spacer(Modifier.width(8.dp))
+                            Text("Baixando mapa...", fontSize = 14.sp)
+                        } else {
+                            Icon(
+                                imageVector = if (mapaBaixado) Icons.Filled.Refresh else Icons.Filled.Download,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                if (mapaBaixado) "Mapa Baixado (Atualizar)" else "Baixar Mapa de Bissau",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
             }
