@@ -30,14 +30,10 @@ private const val URL_ATUALIZAR = "https://apkpure.com/p/com.bissaulife.app"
 fun DefinicoesScreen(
     onVoltar: () -> Unit,
     isDarkMode: Boolean,
-    onToggleDarkMode: (Boolean) -> Unit,
-    onAbrirDownloadMapa: () -> Unit
+    onToggleDarkMode: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-    val prefs = remember { context.getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE) }
-    
     var notificacoesAtivas by remember { mutableStateOf(true) }
-    var mapaBaixado by remember { mutableStateOf(prefs.getBoolean("mapa_baixado", false)) }
 
     fun abrirLink(url: String) {
         try { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url))) } catch (e: Exception) {}
@@ -84,42 +80,6 @@ fun DefinicoesScreen(
                             Text("Alterar tema do aplicativo", fontSize = 12.sp, color = Color.Gray)
                         }
                         Switch(checked = isDarkMode, onCheckedChange = { onToggleDarkMode(it) }, colors = SwitchDefaults.colors(checkedThumbColor = BissauGreen, checkedTrackColor = BissauGreen.copy(alpha = 0.5f)))
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(18.dp))
-
-            Text("Mapa Offline", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray, modifier = Modifier.padding(start = 6.dp, bottom = 8.dp))
-            Card(shape = RoundedCornerShape(16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface), modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        "Baixe o mapa da cidade de Bissau para usar o aplicativo sem precisar de internet. Recomendamos fazer o download conectado ao Wi-Fi.",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        lineHeight = 18.sp
-                    )
-                    Spacer(Modifier.height(16.dp))
-                    
-                    Button(
-                        onClick = { onAbrirDownloadMapa() },
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (mapaBaixado) Color(0xFF607D8B) else BissauGreen
-                        ),
-                        shape = RoundedCornerShape(25.dp)
-                    ) {
-                        Icon(
-                            imageVector = if (mapaBaixado) Icons.Filled.Refresh else Icons.Filled.Download,
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            if (mapaBaixado) "Mapa Baixado (Atualizar)" else "Baixar Mapa de Bissau",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
                     }
                 }
             }

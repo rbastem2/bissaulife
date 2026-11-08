@@ -14,18 +14,11 @@ import com.bissaulife.app.data.*
 import com.bissaulife.app.screens.*
 import com.bissaulife.app.theme.*
 import kotlinx.coroutines.delay
-import java.io.File
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val prefs = getSharedPreferences("BissauLifePrefs", Context.MODE_PRIVATE)
-        
-        // CONFIGURAÇÃO SEGURA DO MAPA
-        val osmConfig = org.osmdroid.config.Configuration.getInstance()
-        osmConfig.load(this, getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
-        osmConfig.osmdroidBasePath = File(cacheDir, "osmdroid")
-        osmConfig.osmdroidTileCache = File(osmConfig.osmdroidBasePath, "tiles")
         
         setContent {
             var isDarkMode by remember { mutableStateOf(prefs.getBoolean("dark_mode", false)) }
@@ -81,31 +74,11 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        composable("download_mapa") {
-                            DownloadMapScreen(
-                                onVoltar = { navController.popBackStack() },
-                                onDownloadConcluido = {
-                                    prefs.edit().putBoolean("mapa_baixado", true).apply()
-                                }
-                            )
-                        }
-
-                        composable("mapa_offline/{nome}/{endereco}") { backStackEntry ->
-                            val nome = backStackEntry.arguments?.getString("nome") ?: ""
-                            val endereco = backStackEntry.arguments?.getString("endereco") ?: ""
-                            MapaRotaScreen(
-                                nomeDestino = Uri.decode(nome),
-                                enderecoDestino = Uri.decode(endereco),
-                                onVoltar = { navController.popBackStack() }
-                            )
-                        }
-
                         composable("definicoes") {
                             DefinicoesScreen(
                                 onVoltar = { navController.popBackStack() },
                                 isDarkMode = isDarkMode,
-                                onToggleDarkMode = onToggleDarkMode,
-                                onAbrirDownloadMapa = { navController.navigate("download_mapa") }
+                                onToggleDarkMode = onToggleDarkMode
                             )
                         }
 
@@ -115,7 +88,7 @@ class MainActivity : ComponentActivity() {
                         composable("detalhe_restaurante/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val restaurante = Restaurantes.lista.find { it.id == id } ?: Restaurantes.lista.first()
-                            DetalheScreen(restaurante, favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                            DetalheScreen(restaurante, favoritosVM, { navController.popBackStack() })
                         }
 
                         composable("moda") {
@@ -124,7 +97,7 @@ class MainActivity : ComponentActivity() {
                         composable("detalhe_item_moda/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val item = Moda.lista.find { it.id == id } ?: Moda.lista.first()
-                            DetalheItemScreen(item, "moda", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                            DetalheItemScreen(item, "moda", favoritosVM, { navController.popBackStack() })
                         }
 
                         composable("viagens") {
@@ -133,7 +106,7 @@ class MainActivity : ComponentActivity() {
                         composable("detalhe_item_viagem/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val item = Viagens.lista.find { it.id == id } ?: Viagens.lista.first()
-                            DetalheItemScreen(item, "viagem", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                            DetalheItemScreen(item, "viagem", favoritosVM, { navController.popBackStack() })
                         }
 
                         composable("beleza") {
@@ -142,7 +115,7 @@ class MainActivity : ComponentActivity() {
                         composable("detalhe_item_beleza/{id}") { backStackEntry ->
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val item = Beleza.lista.find { it.id == id } ?: Beleza.lista.first()
-                            DetalheItemScreen(item, "beleza", favoritosVM, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                            DetalheItemScreen(item, "beleza", favoritosVM, { navController.popBackStack() })
                         }
 
                         composable("detalhe_negocio/{id}") { backStackEntry ->
@@ -152,7 +125,7 @@ class MainActivity : ComponentActivity() {
                                 val cor = when (negocio.categoria.lowercase()) {
                                     "gastronomia" -> BissauOrange; "moda" -> BissauPurple; "viagens" -> BissauBlue; "beleza" -> BissauPink; else -> BissauGreen
                                 }
-                                DetalheNegocioScreen(negocio, cor, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                                DetalheNegocioScreen(negocio, cor, { navController.popBackStack() })
                             } else {
                                 LaunchedEffect(Unit) { navController.popBackStack() }
                             }
@@ -169,7 +142,7 @@ class MainActivity : ComponentActivity() {
                             val id = backStackEntry.arguments?.getString("id")?.toIntOrNull() ?: 1
                             val local = LocaisTurista.lista.find { it.id == id }
                             if (local != null) {
-                                DetalheTuristaScreen(local, { navController.popBackStack() }, { nome, end -> navController.navigate("mapa_offline/${Uri.encode(nome)}/${Uri.encode(end)}") })
+                                DetalheTuristaScreen(local, { navController.popBackStack() })
                             } else {
                                 LaunchedEffect(Unit) { navController.popBackStack() }
                             }
