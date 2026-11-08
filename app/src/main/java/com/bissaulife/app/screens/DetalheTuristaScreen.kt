@@ -107,9 +107,3 @@ fun DetalheTuristaScreen(
     }
 }
 
-fun iconePara(categoria: String): String {
-    return when (categoria) {
-        "Hospitais" -> "🏥"; "Embaixadas" -> "🌍"; "Ministerios" -> "🏛️"; "Futebol" -> "⚽"; "Farmacias" -> "💊"
-        "Discotecas" -> "🎉"; "Supermercados" -> "🛒"; "Feiras" -> "🛍️"; "Combustivel" -> "⛽"; "Bancos e Cambio" -> "🏦"; "Pontos Turisticos" -> "📸"; else -> "📍"
-    }
-}
